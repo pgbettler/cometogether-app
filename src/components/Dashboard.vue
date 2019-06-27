@@ -34,7 +34,13 @@
                         <p>create a post</p>
                         <form @submit.prevent>
                             <textarea v-model.trim="post.title" placeholder="Event Name"></textarea><p>required</p>
-                            <datetime type="datetime" v-model.trim="post.eventDate" use12-hour></datetime>
+                            <datetime 
+                              type="datetime" 
+                              v-model.trim="post.eventDate" 
+                              class="theme-gold"
+                              :format="{ year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit'}"
+                              :minute-step="15"
+                              use12-hour></datetime>
                             <textarea v-model.trim="post.content" placeholder = "Details"></textarea>
                             <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
                             <button @click="createPost" class="button">post</button>
