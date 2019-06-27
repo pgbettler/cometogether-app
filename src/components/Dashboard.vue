@@ -49,8 +49,9 @@
                     <div v-if="!showEditForm" class="create-post">
                         <p>Create New Event</p>
                         <form @submit.prevent>
-                            <textarea v-model.trim="post.title" placeholder="Event Name"></textarea><p>required</p>
+                            <textarea v-model.trim="post.title" placeholder="Event Name"></textarea>
                             <datetime 
+                              placeholder= 'Click to Add Event Date'
                               type="datetime" 
                               v-model.trim="post.eventDate" 
                               class="theme-gold"
