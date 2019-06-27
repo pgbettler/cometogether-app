@@ -11,7 +11,7 @@ fb.auth.onAuthStateChanged(user => {
       store.dispatch('fetchUserProfile')
 
     // realtime updates from our posts collection
-       fb.postsCollection.orderBy('createdOn', 'desc').onSnapshot(querySnapshot => {
+       fb.postsCollection.orderBy('eventDate', 'desc').onSnapshot(querySnapshot => {
         let postsArray = []
 
          querySnapshot.forEach(doc => {
