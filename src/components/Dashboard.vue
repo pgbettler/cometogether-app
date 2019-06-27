@@ -101,7 +101,7 @@ export default {
   },
   methods: {
     createContact() {
-      fb.contactsCollection
+      fb.postsCollection
         .add({
           createdOn: new Date(),
           firstName: this.contact.firstName,
@@ -137,7 +137,7 @@ export default {
     saveEditContact() {
       // Calls toggle form at the end of all operations to hide the edit form
       //This method is called by Save to update a contact with info
-      fb.contactsCollection
+      fb.postsCollection
         .doc(this.editId)
         .update({
           firstName: this.contact.firstName,

@@ -25,12 +25,16 @@ db.settings(settings)
 
 // firebase collections
 const usersCollection = db.collection("users")
-const contactsCollection = db.collection("contacts")
+const postsCollection = db.collection("posts")
+const likesCollection = db.collection("likes")
+const organizationsCollection = db.collection("organizations")
 
 export {
     db,
     auth,
     currentUser,
     usersCollection,
-    contactsCollection
+    postsCollection,
+    likesCollection,
+    organizationsCollection
 }
