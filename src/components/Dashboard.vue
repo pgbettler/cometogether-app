@@ -33,8 +33,11 @@
                     <div class="create-post">
                         <p>create a post</p>
                         <form @submit.prevent>
-                            <textarea></textarea>
-                            <button class="button">post</button>
+                            <textarea v-model.trim="post.title" placeholder="Event Name"></textarea>
+                            <textarea v-model.trim="post.eventDate" placeholder = "Event Date"></textarea>
+                            <textarea v-model.trim="post.content" placeholder = "Details"></textarea>
+                            <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
+                            <button @click="createPost" :disabled="post.content== '' && post.title == ''" class="button">post</button>
                         </form>
                     </div>
                 </div>
@@ -53,12 +56,11 @@ const fb = require("../../firebaseConfig.js");
 export default {
   data() {
     return {
-      contact: {
-        firstName: "",
-        lastName: "",
-        phoneNumber: "",
-        email: "",
-        address: ""
+      post: {
+        title: '',
+        content: '',
+        eventDate: '',
+        picture: ''
       },
       showEditForm: false,
       editId: "",
@@ -79,9 +81,9 @@ export default {
         );
       });
     },
-    ...mapState(["userProfile", "currentUser", "contacts"]),
+    ...mapState(["userProfile", "currentUser", "posts"]),
     filteredList() {
-      return this.contacts.filter(contact => {
+      return this.posts.filter(contact => {
         return contact.firstName
           .toLowerCase()
           .includes(this.search.toLowerCase());
@@ -90,22 +92,21 @@ export default {
   },
   methods: {
     createContact() {
-      fb.postsCollection
-        .add({
+      fb.postsCollection.add({
           createdOn: new Date(),
-          firstName: this.contact.firstName,
-          lastName: this.contact.lastName,
-          phoneNumber: this.contact.phoneNumber,
-          email: this.contact.email,
-          address: this.contact.address,
+          title: this.post.title,
+          content: this.post.content,
+          eventDate: this.post.eventDate,
+          picture: this.post.picture,
           userId: this.currentUser.uid,
-          userName: this.userProfile.name
+          organizationName: this.userProfile.organizationName,
+          likeCount: 0
         })
         .then(ref => {
-          (this.contact.firstName = ""),
-            (this.contact.lastName = ""),
-            (this.contact.phoneNumber = "");
-          (this.contact.email = ""), (this.contact.address = "");
+          this.post.title = '',
+          this.post.content = '',
+          this.post.picture = '',
+          this.post.eventDate = ''
         })
         .catch(err => {
           console.log(err);
