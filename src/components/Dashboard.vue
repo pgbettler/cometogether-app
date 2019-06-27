@@ -58,6 +58,10 @@
                   <p class="no-results">There are currently no posts</p>
               </div>
             </div>
+            <div class="container">
+              <input type="text" placeholder="Search...">
+              <div class="search"></div>
+            </div>
         </section>
     </div>
 </template>
