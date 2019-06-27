@@ -31,7 +31,22 @@
                     <p><i>{{ userProfile.accountType }}</i></p>
                     <h5>{{ userProfile.organizationDetails | trimLength }}</h5>
                     <br>
-                    <div class="create-post">
+                    <div class="edit-post" v-if="showEditForm">
+                     <p>Edit Post</p>
+                        <form>
+                            <textarea v-model.trim="post.title" placeholder="Event Name"></textarea><p>required</p>
+                            <datetime 
+                              type="datetime" 
+                              v-model.trim="post.eventDate" 
+                              class="theme-gold"
+                              :minute-step="15"
+                              use12-hour></datetime>
+                            <textarea v-model.trim="post.content" placeholder = "Details"></textarea>
+                            <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
+                            <button @click="saveEditContact" class="button">Save</button>
+                        </form>
+                    </div>
+                    <div v-if="!showEditForm" class="create-post">
                         <p>Create New Event</p>
                         <form @submit.prevent>
                             <textarea v-model.trim="post.title" placeholder="Event Name"></textarea><p>required</p>
@@ -57,7 +72,8 @@
                       <ul>
                           <li><a @click="likePost(post.id, post.likeCount)">Likes {{ post.likeCount }}</a></li>
                           <div v-if="post.userId == currentUser.uid">
-                            <li><a @click="deletePost(post.id)">Delete Post</a></li>
+                            <button @click="deletePost(post.id)" class="button">Delete Post</button>
+                            <button @click="editPost(post)" class="button">Edit Post</button>
                           </div>
                       </ul>
                   </div>
@@ -163,18 +179,16 @@ export default {
       fb.postsCollection
         .doc(this.editId)
         .update({
-          firstName: this.contact.firstName,
-          lastName: this.contact.lastName,
-          phoneNumber: this.contact.phoneNumber,
-          email: this.contact.email,
-          address: this.contact.address
+          title: this.post.title,
+          content: this.post.content,
+          eventDate: this.post.eventDate,
+          picture: this.post.picture
         })
         .then(ref => {
-          (this.contact.firstName = ""),
-            (this.contact.lastName = ""),
-            (this.contact.phoneNumber = ""),
-            (this.contact.email = ""),
-            (this.contact.address = "");
+          this.post.title = '',
+          this.post.content = '',
+          this.post.picture = '',
+          this.post.eventDate = '';
         })
         .catch(err => {
           console.log(err);
@@ -184,18 +198,17 @@ export default {
     },
     //this method is triggered by the edit button
     //toggles the form and populates the placeholders with contact information
-    editContact(contact) {
+    editPost(post) {
       //make the edit form appear
       this.toggleForm();
       //populate with contact info
-      console.log(this.contact.firstName);
+      console.log(this.post.title);
       console.log("sanity check");
-      (this.contact.firstName = contact.firstName),
-        (this.contact.lastName = contact.lastName),
-        (this.contact.phoneNumber = contact.phoneNumber),
-        (this.contact.email = contact.email),
-        (this.contact.address = contact.address),
-        (this.editId = contact.id);
+        (this.post.title = post.title),
+        (this.post.content = post.content),
+        (this.post.eventDate = post.eventDate),
+        (this.post.picture = post.picture),
+        (this.editId = post.id);
     }
   }
 };
