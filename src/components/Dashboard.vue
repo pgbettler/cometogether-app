@@ -34,7 +34,7 @@
                         <p>create a post</p>
                         <form @submit.prevent>
                             <textarea v-model.trim="post.title" placeholder="Event Name"></textarea><p>required</p>
-                            <textarea v-model.trim="post.eventDate" placeholder = "Event Date"></textarea>
+                            <datetime v-model="date"></datetime>
                             <textarea v-model.trim="post.content" placeholder = "Details"></textarea>
                             <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
                             <button @click="createPost" class="button">post</button>
@@ -46,11 +46,10 @@
               <div v-if="posts.length">
                   <div v-for="post in posts" class="post">
                       <h5>{{ post.title }}</h5>
-                      <span>{{ post.createdOn | formatDate }}</span>
+                      <h7>{{ post.eventDate }}</h7>
                       <p>{{ post.content | trimLength }}</p>
                       <ul>
-                          <li><a>likes {{ post.likes }}</a></li>
-                          <li><a>view full post</a></li>
+                          <li><a @click="likePost(post.id, post.likeCount)">likes {{ post.likeCount }}</a></li>
                       </ul>
                   </div>
               </div> 
@@ -65,6 +64,7 @@
 import { mapState } from "vuex";
 const fb = require("../../firebaseConfig.js");
 
+
 export default {
   data() {
     return {
@@ -72,7 +72,8 @@ export default {
         title: '',
         content: '',
         eventDate: '',
-        picture: ''
+        picture: '',
+        likeCount: ''
       },
       showEditForm: false,
       editId: "",
@@ -86,10 +87,10 @@ export default {
   methods: {
     createPost() {
       fb.postsCollection.add({
-          createdOn: new Date(),
           title: this.post.title,
-          content: this.post.content,
+          createdOn: new Date(),
           eventDate: this.post.eventDate,
+          content: this.post.content,
           picture: this.post.picture,
           userId: this.currentUser.uid,
           organizationName: this.userProfile.organizationName,
@@ -105,6 +106,24 @@ export default {
           console.log(err);
         });
     },
+    likePost(postId, postLikes) {
+      let docId = `${this.currentUser.uid}_${postId}`
+        fb.likesCollection.doc(docId).get().then(doc => {
+          // add to users list of liked posts
+          if (doc.exists) { return }
+          fb.likesCollection.doc(docId).set({
+             postId: postId,
+             userId: this.currentUser.uid
+          }).then(() => {
+             // update post likes
+             fb.postsCollection.doc(postId).update({
+             likeCount: postLikes + 1
+            })
+          })
+          }).catch(err => {
+             console.log(err)
+          })
+   },
     deleteContact(id) {
       fb.contactsCollection
         .doc(id)
