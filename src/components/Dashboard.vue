@@ -27,9 +27,10 @@
                   Create New Post
               -->
                 <div class="profile" v-if="userProfile.accountType == 'Organization'">
-                    <h5>{{ userProfile.organizationName }}</h5>
-                    <p>{{ userProfile.accountType }}</p>
-                    <p>{{ userProfile.organizationDetails }}</p>
+                    <h3>{{ userProfile.organizationName }}</h3>
+                    <p><i>{{ userProfile.accountType }}</i></p>
+                    <h5>{{ userProfile.organizationDetails | trimLength }}</h5>
+                    <br>
                     <div class="create-post">
                         <p>Create New Event</p>
                         <form @submit.prevent>
@@ -42,7 +43,7 @@
                               use12-hour></datetime>
                             <textarea v-model.trim="post.content" placeholder = "Details"></textarea>
                             <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
-                            <button @click="createPost" class="button">post</button>
+                            <button @click="createPost" class="button">Post</button>
                         </form>
                     </div>
                 </div>
@@ -56,6 +57,9 @@
                       <ul>
                           <li><a @click="likePost(post.id, post.likeCount)">Likes {{ post.likeCount }}</a></li>
                       </ul>
+                      <div v-if="post.userId == currentUser.uid">
+                      <a @click="deletePost(post.id)">Delete Post</a>
+                      </div>
                   </div>
               </div> 
               <div v-else>
@@ -143,8 +147,8 @@ export default {
              console.log(err)
           })
    },
-    deleteContact(id) {
-      fb.contactsCollection
+    deletePost(id) {
+      fb.postsCollection
         .doc(id)
         .delete()
         .catch(err => {
