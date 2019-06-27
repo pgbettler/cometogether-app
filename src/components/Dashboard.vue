@@ -33,19 +33,30 @@
                     <div class="create-post">
                         <p>create a post</p>
                         <form @submit.prevent>
-                            <textarea v-model.trim="post.title" placeholder="Event Name"></textarea>
+                            <textarea v-model.trim="post.title" placeholder="Event Name"></textarea><p>required</p>
                             <textarea v-model.trim="post.eventDate" placeholder = "Event Date"></textarea>
                             <textarea v-model.trim="post.content" placeholder = "Details"></textarea>
                             <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
-                            <button @click="createPost" :disabled="post.content== '' && post.title == ''" class="button">post</button>
+                            <button @click="createPost" class="button">post</button>
                         </form>
                     </div>
                 </div>
             </div>
             <div class="col2">
-                <div>
-                    <p class="no-results">There are currently no posts</p>
-                </div>
+              <div v-if="posts.length">
+                  <div v-for="post in posts" class="post">
+                      <h5>{{ post.title }}</h5>
+                      <span>{{ post.createdOn | formatDate }}</span>
+                      <p>{{ post.content | trimLength }}</p>
+                      <ul>
+                          <li><a>likes {{ post.likes }}</a></li>
+                          <li><a>view full post</a></li>
+                      </ul>
+                  </div>
+              </div> 
+              <div v-else>
+                  <p class="no-results">There are currently no posts</p>
+              </div>
             </div>
         </section>
     </div>
@@ -53,6 +64,7 @@
 <script>
 import { mapState } from "vuex";
 const fb = require("../../firebaseConfig.js");
+
 export default {
   data() {
     return {
@@ -69,29 +81,10 @@ export default {
     };
   },
   computed: {
-    filteredContacts() {
-      return this.contacts.filter(contact => {
-        return (
-          JSON.stringify(contact)
-            .toLowerCase()
-            .includes(this.search.toLowerCase()) ||
-          JSON.stringify(contact.firstName + " " + contact.lastName)
-            .toLowerCase()
-            .includes(this.search.toLowerCase())
-        );
-      });
-    },
-    ...mapState(["userProfile", "currentUser", "posts"]),
-    filteredList() {
-      return this.posts.filter(contact => {
-        return contact.firstName
-          .toLowerCase()
-          .includes(this.search.toLowerCase());
-      });
-    }
+    ...mapState(['userProfile', 'currentUser', 'posts']),
   },
   methods: {
-    createContact() {
+    createPost() {
       fb.postsCollection.add({
           createdOn: new Date(),
           title: this.post.title,

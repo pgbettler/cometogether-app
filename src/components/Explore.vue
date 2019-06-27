@@ -1,6 +1,6 @@
 <template>
     <div>
-        <p>Settings
+        <p>Explore Page
         </p>
     </div>
 </template>
