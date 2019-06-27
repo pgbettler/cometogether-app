@@ -26,13 +26,16 @@
                         <a @click="toggleForm">Create an Account</a>
                     </div>
                 </form>
+               <!--Pick what type of user you are
+                    form will change depending on user type
+                    THIS SWAP FEATURE DOES NOT WORK PROPERLY-->
                 <form v-if="!showLoginForm" @submit.prevent>
                   <h1>Get Started</h1>
                   <input type="radio" v-model.trim="signupForm.accountType" value="Student" @click="toggleFormType" checked> I am a Student<br>
                   <input type="radio" v-model.trim="signupForm.accountType" value="Organization" @click="toggleFormType"> I am an Organization<br>
                 </form>
+                 <!--Student Signup-->
                 <form v-if="!showLoginForm && showStudentForm" @submit.prevent>
-
                     <label for="firstName">First Name</label>
                     <input v-model.trim="signupForm.firstName" type="text" placeholder="First Name" id="name" />
 
@@ -47,9 +50,13 @@
 
                     <button @click="signup" class="button">Sign Up</button>
                 </form>
+                <!--Organization Signup-->
                 <form v-if="!showLoginForm && !showStudentForm" @submit.prevent>
                     <label for="organizationName">Organization Name</label>
                     <input v-model.trim="signupForm.organizationName" type="text" placeholder="Organization Name" id="name" />
+
+                    <label for="organizationDetails">Organization Details</label>
+                    <input v-model.trim="signupForm.organizationDetails" type="text" placeholder="Details" id="details" />
 
                     <label for="email2">Email</label>
                     <input v-model.trim="signupForm.email" type="text" placeholder="Email" id="email2" />
@@ -82,6 +89,7 @@ const fb = require('../../firebaseConfig.js')
                     firstName: '',
                     lastName: '',
                     organizationName: '',
+                    organizationDetails: '',
                     email: '',
                     password: ''
                 },
@@ -121,7 +129,8 @@ const fb = require('../../firebaseConfig.js')
                         firstName: this.signupForm.firstName,
                         lastName: this.signupForm.lastName,
                         accountType: this.signupForm.accountType,
-                        organizationName: this.signupForm.organizationName
+                        organizationName: this.signupForm.organizationName,
+                        organizationDetails: this.signupForm.organizationDetails
                     }).then(() => {
                         this.$store.dispatch('fetchUserProfile')
                         this.performingRequest = false
