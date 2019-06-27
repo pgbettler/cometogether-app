@@ -31,14 +31,13 @@
                     <p>{{ userProfile.accountType }}</p>
                     <p>{{ userProfile.organizationDetails }}</p>
                     <div class="create-post">
-                        <p>create a post</p>
+                        <p>Create New Event</p>
                         <form @submit.prevent>
                             <textarea v-model.trim="post.title" placeholder="Event Name"></textarea><p>required</p>
                             <datetime 
                               type="datetime" 
                               v-model.trim="post.eventDate" 
                               class="theme-gold"
-                              :format="{ year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit'}"
                               :minute-step="15"
                               use12-hour></datetime>
                             <textarea v-model.trim="post.content" placeholder = "Details"></textarea>
@@ -52,10 +51,10 @@
               <div v-if="posts.length">
                   <div v-for="post in posts" class="post">
                       <h5>{{ post.title }}</h5>
-                      <h7>{{ post.eventDate }}</h7>
+                      <span>{{ post.eventDate }}</span>
                       <p>{{ post.content | trimLength }}</p>
                       <ul>
-                          <li><a @click="likePost(post.id, post.likeCount)">likes {{ post.likeCount }}</a></li>
+                          <li><a @click="likePost(post.id, post.likeCount)">Likes {{ post.likeCount }}</a></li>
                       </ul>
                   </div>
               </div> 
@@ -68,6 +67,7 @@
 </template>
 <script>
 import { mapState } from "vuex";
+import moment from 'moment'; //this is used for date formatting
 const fb = require("../../firebaseConfig.js");
 
 
@@ -90,12 +90,25 @@ export default {
   computed: {
     ...mapState(['userProfile', 'currentUser', 'posts']),
   },
+  filters: {
+      formatDate: function(val) {
+          if (!val) { return '-' }
+          let date = val.toDate()
+          return date.toLocaleString(DateTime.DATETIME_MED)
+      },
+      trimLength: function(val) {
+          if (val.length < 200) {
+              return val
+          }
+          return `${val.substring(0, 200)}...`
+      }
+  },
   methods: {
     createPost() {
       fb.postsCollection.add({
           title: this.post.title,
           createdOn: new Date(),
-          eventDate: this.post.eventDate,
+          eventDate: new Date(this.post.eventDate),
           content: this.post.content,
           picture: this.post.picture,
           userId: this.currentUser.uid,
