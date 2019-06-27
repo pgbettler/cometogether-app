@@ -4,7 +4,7 @@ import firebase from 'firebase'
 
 import Login from '@/components/Login'
 import Dashboard from '@/components/Dashboard'
-import Settings from '@/components/Settings'
+import Explore from '@/components/Explore'
 
 Vue.use(Router)
 
@@ -29,9 +29,9 @@ const router = new Router({
             }
         },
         {
-            path: '/settings',
-            name: 'Settings',
-            component: Settings,
+            path: '/explore',
+            name: 'Explore',
+            component: Explore,
             meta: {
                 requiresAuth: true
             }

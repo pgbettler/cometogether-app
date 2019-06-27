@@ -1,63 +1,28 @@
 <template>
-  <div id="dashboard">
-    <section>
-      <div class="col1">
-        <div class="profile">
-          <h5>{{ userProfile.firstName }}'s Contacts</h5>
-          <div class="edit-Contact" v-if="showEditForm">
-            <p>Edit Contact</p>
-            <form>
-              <!-- //might need a submit prevent button -->
-              <textarea v-model.trim="contact.firstName" placeholder="First Name"></textarea>
-              <textarea v-model.trim="contact.lastName" placeholder="Last Name"></textarea>
-              <textarea v-model.trim="contact.email" placeholder="Email"></textarea>
-              <textarea v-model.trim="contact.phoneNumber" placeholder="Phone Number"></textarea>
-              <textarea v-model.trim="contact.address" placeholder="Address"></textarea>
-              <button @click="saveEditContact()" class="button">Save</button>
-            </form>
-          </div>
-          <div class="create-contact" v-if="!showEditForm">
-            <p>Create a Contact</p>
-            <form @submit.prevent>
-              <textarea v-model.trim="contact.firstName" placeholder="First Name"></textarea>
-              <textarea v-model.trim="contact.lastName" placeholder="Last Name"></textarea>
-              <textarea v-model.trim="contact.email" placeholder="Email"></textarea>
-              <textarea v-model.trim="contact.phoneNumber" placeholder="Phone Number"></textarea>
-              <textarea v-model.trim="contact.address" placeholder="Address"></textarea>
-              <button @click="createContact" class="button">Create</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="col2">
-        <div class="container">
-          <input type="text" v-model="search" placeholder="Search..">
-          <div class="search"></div>
-        </div>
-        <div v-if="contacts.length">
-          <div v-for="contact in filteredContacts" :key="contact.id" class="contact">
-            <h3>{{ contact.firstName }} {{ contact.lastName }}</h3>
-            <h3>{{ contact.phoneNumber}}</h3>
-            <h5>{{ contact.email }}</h5>
-            <h5>{{ contact.address }}</h5>
-            <ul>
-              <li>
-                <button @click="editContact(contact)" class="button">Edit</button>
-              </li>
-              <li>
-                <button @click="deleteContact(contact.id)" class="button">Delete</button>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div v-else>
-          <p class="no-results">There are currently no contacts</p>
-        </div>
-      </div>
-    </section>
-  </div>
+    <div id="dashboard">
+        <section>
+            <div class="col1">
+                <div class="profile">
+                    <h5 v-if="userProfile.accountType == 'Student'">{{ userProfile.firstName }} {{ userProfile.lastName }}</h5>
+                    <h5 v-if="userProfile.accountType == 'Organization'">{{ userProfile.organizationName }}</h5>
+                    <p>{{ userProfile.accountType }} Account</p>
+                    <div class="create-post">
+                        <p>create a post</p>
+                        <form @submit.prevent>
+                            <textarea></textarea>
+                            <button class="button">post</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col2">
+                <div>
+                    <p class="no-results">There are currently no posts</p>
+                </div>
+            </div>
+        </section>
+    </div>
 </template>
-
 <script>
 import { mapState } from "vuex";
 const fb = require("../../firebaseConfig.js");
