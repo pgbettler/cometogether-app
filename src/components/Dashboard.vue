@@ -67,7 +67,8 @@
             <div class="col2">
               <div v-if="posts.length">
                   <div v-for="post in posts" class="post">
-                      <h5>{{ post.title }}</h5>
+                      <h4>{{ post.title }}</h4>
+                      <h5>{{ post.organizationName }}</h5>
                       <span>{{ post.eventDate | moment }}</span>
                       <p>{{ post.content | trimLength }}</p>
                       <ul>
@@ -127,7 +128,7 @@ export default {
       fb.postsCollection.add({
           title: this.post.title,
           createdOn: new Date(),
-          eventDate: new Date(this.post.eventDate),
+          eventDate: this.post.eventDate,
           content: this.post.content,
           picture: this.post.picture,
           userId: this.currentUser.uid,
