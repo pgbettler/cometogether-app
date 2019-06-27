@@ -2,10 +2,34 @@
     <div id="dashboard">
         <section>
             <div class="col1">
-                <div class="profile">
-                    <h5 v-if="userProfile.accountType == 'Student'">{{ userProfile.firstName }} {{ userProfile.lastName }}</h5>
-                    <h5 v-if="userProfile.accountType == 'Organization'">{{ userProfile.organizationName }}</h5>
-                    <p>{{ userProfile.accountType }} Account</p>
+              <!-- Depending on User Type,
+                 this seciton while show Student or Organization Sideview-->
+
+
+              <!-- Student View:
+                  FirstName LastName
+                  Student
+
+                  Liked Organizations List
+              -->
+                <div class="profile" v-if="userProfile.accountType == 'Student'">
+                    <h5>{{ userProfile.firstName }} {{ userProfile.lastName }}</h5>
+                    <p>{{ userProfile.accountType }}</p>
+                    <div class="liked-org">
+                        <p>This section will show liked organizations</p>
+                    </div>
+                </div>
+              <!-- Organization View:
+                  OrganizationName
+                  Organization
+                  Organization Description
+
+                  Create New Post
+              -->
+                <div class="profile" v-if="userProfile.accountType == 'Organization'">
+                    <h5>{{ userProfile.organizationName }}</h5>
+                    <p>{{ userProfile.accountType }}</p>
+                    <p>{{ userProfile.organizationDetails }}</p>
                     <div class="create-post">
                         <p>create a post</p>
                         <form @submit.prevent>
