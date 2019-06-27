@@ -52,14 +52,14 @@
               <div v-if="posts.length">
                   <div v-for="post in posts" class="post">
                       <h5>{{ post.title }}</h5>
-                      <span>{{ post.eventDate }}</span>
+                      <span>{{ post.eventDate | moment }}</span>
                       <p>{{ post.content | trimLength }}</p>
                       <ul>
                           <li><a @click="likePost(post.id, post.likeCount)">Likes {{ post.likeCount }}</a></li>
+                          <div v-if="post.userId == currentUser.uid">
+                            <li><a @click="deletePost(post.id)">Delete Post</a></li>
+                          </div>
                       </ul>
-                      <div v-if="post.userId == currentUser.uid">
-                      <a @click="deletePost(post.id)">Delete Post</a>
-                      </div>
                   </div>
               </div> 
               <div v-else>
@@ -95,10 +95,8 @@ export default {
     ...mapState(['userProfile', 'currentUser', 'posts']),
   },
   filters: {
-      formatDate: function(val) {
-          if (!val) { return '-' }
-          let date = val.toDate()
-          return date.toLocaleString(DateTime.DATETIME_MED)
+      moment: function(date) {
+        return moment(date).format('MMMM Do YYYY, h:mm a');
       },
       trimLength: function(val) {
           if (val.length < 200) {
