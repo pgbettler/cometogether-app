@@ -125,6 +125,8 @@ const fb = require('../../firebaseConfig.js')
                     this.$store.commit('setCurrentUser', user.user)
 
                     // create user obj
+                    // notice that both Students and Organizations create a user object
+                    // ERD NEEDS TO BE UPDATED TO SUPPORT THIS
                     fb.usersCollection.doc(user.user.uid).set({
                         firstName: this.signupForm.firstName,
                         lastName: this.signupForm.lastName,
