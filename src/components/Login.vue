@@ -29,12 +29,12 @@
                <!--Pick what type of user you are
                     form will change depending on user type
                     THIS SWAP FEATURE DOES NOT WORK PROPERLY-->
-                <form v-if="!showLoginForm" @submit.prevent>
+                <form2 v-if="!showLoginForm" @submit.prevent>
                   <h1>Get Started</h1>
-                  <input type="radio" v-model.trim="signupForm.accountType" value="Student" @click="toggleFormType" checked> I am a Student<br>
-                  <input type="radio" v-model.trim="signupForm.accountType" value="Organization" @click="toggleFormType"> I am an Organization<br>
-                </form>
-                 <!--Student Signup-->
+                  <input type="radio" v-model.trim="signupForm.accountType" checked="checked" value="Student" @click="toggleStudentType"> I am a Student<br>
+                  <input type="radio" v-model.trim="signupForm.accountType" value="Organization" @click="toggleOrganizationType"> I am an Organization<br>
+                </form2>
+                 
                 <form v-if="!showLoginForm && showStudentForm" @submit.prevent>
                     <label for="firstName">First Name</label>
                     <input v-model.trim="signupForm.firstName" type="text" placeholder="First Name" id="name" />
@@ -50,7 +50,7 @@
 
                     <button @click="signup" class="button">Sign Up</button>
                 </form>
-                <!--Organization Signup-->
+                
                 <form v-if="!showLoginForm && !showStudentForm" @submit.prevent>
                     <label for="organizationName">Organization Name</label>
                     <input v-model.trim="signupForm.organizationName" type="text" placeholder="Organization Name" id="name" />
@@ -65,7 +65,7 @@
                     <input v-model.trim="signupForm.password" type="password" placeholder="min 6 characters" id="password2" />
 
                     <button @click="signup" class="button">Sign Up</button>
-                </form>
+                </form> 
                 <div v-if="!showLoginForm" class="extras">
                       <a @click="toggleForm">Back to Log In</a><br>
                 </div>
@@ -103,8 +103,13 @@ const fb = require('../../firebaseConfig.js')
             toggleForm() {
                 this.showLoginForm = !this.showLoginForm
             },
-            toggleFormType() {
-                this.showStudentForm = !this.showStudentForm;
+            toggleStudentType() {
+                this.showOrganizationForm = false;
+                this.showStudentForm = true;
+            },
+            toggleOrganizationType() {
+                this.showStudentForm = false;
+                this.showOrganizationForm = true;
             },
             login() {
                 this.performingRequest = true
