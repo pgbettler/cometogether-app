@@ -84,10 +84,12 @@
                   <p class="no-results">There are currently no posts</p>
               </div>
             </div>
-            <div class="container">
-              <input type="text" placeholder="Search...">
-              <div class="search"></div>
+            <div id="wrap">
+              <form action="" autocomplete="off">
+              <input id="search" name="search" type="text" placeholder="Searching Event..."><input id="search_submit" value="Rechercher" type="submit">
+              </form>
             </div>
+
         </section>
     </div>
 </template>
@@ -95,7 +97,6 @@
 import { mapState } from "vuex";
 import moment from 'moment'; //this is used for date formatting
 const fb = require("../../firebaseConfig.js");
-
 
 export default {
   data() {
