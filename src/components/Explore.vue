@@ -7,8 +7,9 @@
                       <h5>{{ post.title }}</h5>
                       <span>{{ post.createdOn | formatDate }}</span>
                       <p>{{ post.content | trimLength }}</p>
+                      <button class="button" @click="toggleLike">  Likes {{ post.likeCount }}</button>
                       <ul>
-                          <li><a>likes {{ post.likes }}</a></li>
+                         <!-- <li><a>Likes: {{ post.likeCount }}</a></li> -->
                           <li><a>view full post</a></li>
                       </ul>
                   </div>
@@ -28,21 +29,33 @@ export default {
   data() {
     return {
       post: {
-        title: '',
-        content: '',
-        eventDate: '',
-        picture: ''
+        likeCount:''
       },
-      showEditForm: false,
-      editId: "",
       search: "",
-      contactString: ""
+      contactString: "",
+      performingRequest: false,
     };
   },
   computed: {
     ...mapState(['userProfile', 'currentUser', 'posts']),
   },
   methods: {
+      /*
+      toggleLike() {
+        // Need to grab userID and postID and also update like 
+        fb.likesCollection
+        .doc(this.editId)
+        .update({
+            likeCount: this.likeCount
+        })
+        .then(ref => {
+            (this.contact.likeCount = "");
+        })
+        .catch(err => {
+          console.log(err);
+        });  
+     }
+     */
   }
 };
 </script>
