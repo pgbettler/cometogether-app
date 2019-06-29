@@ -9,7 +9,7 @@
               <div v-if="posts.length">
                   <div v-for="post in filteredPosts" :key="post.id" class="post">
                       <h5>{{ post.title }}</h5>
-                      <span>{{ post.createdOn }}</span>
+                      <span>{{ post.eventDate }}</span>
                       <p>{{ post.content | trimLength }}</p>
                       <button class="button" @click="toggleLike">  Likes {{ post.likeCount }}</button>
                       <ul>
@@ -43,7 +43,7 @@ export default {
   computed: {
     filteredPosts() {
       return this.posts.filter((post) => {
-        return JSON.stringify(post.title).toLowerCase().includes(this.search.toLowerCase());
+        return JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase());
       })
     },
     ...mapState(['userProfile', 'currentUser', 'posts']),
