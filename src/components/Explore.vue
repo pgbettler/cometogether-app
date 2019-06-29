@@ -4,19 +4,20 @@
             <div class="col2">
               <div v-if="posts.length">
                   <div v-for="post in posts" class="post">
-                      <h5>{{ post.title }}</h5>
-                      <span>{{ post.createdOn | formatDate }}</span>
+                      <h4>{{ post.title }}</h4>
+                      <h5>{{ post.organizationName }}</h5>
+                      <span>{{ post.eventDate | moment }}</span>
                       <p>{{ post.content | trimLength }}</p>
-                      <button class="button" @click="toggleLike">  Likes {{ post.likeCount }}</button>
-                      <ul>
-                         <!-- <li><a>Likes: {{ post.likeCount }}</a></li> -->
-                          <li><a>view full post</a></li>
-                      </ul>
+                      <button @click="likePost(post.id, post.likeCount)" class="button">Likes {{ post.likeCount }}</button>
                   </div>
               </div> 
               <div v-else>
                   <p class="no-results">There are currently no posts</p>
               </div>
+            </div>
+            <div class="container">
+              <input type="text" v-model="search" placeholder="Search..">
+              <div class="search"></div>
             </div>
         </section>
     </div>
@@ -40,22 +41,24 @@ export default {
     ...mapState(['userProfile', 'currentUser', 'posts']),
   },
   methods: {
-      /*
-      toggleLike() {
-        // Need to grab userID and postID and also update like 
-        fb.likesCollection
-        .doc(this.editId)
-        .update({
-            likeCount: this.likeCount
-        })
-        .then(ref => {
-            (this.contact.likeCount = "");
-        })
-        .catch(err => {
-          console.log(err);
-        });  
-     }
-     */
+      likePost(postId, postLikes) {
+      let docId = `${this.currentUser.uid}_${postId}`
+        fb.likesCollection.doc(docId).get().then(doc => {
+          // add to users list of liked posts
+          if (doc.exists) { return }
+          fb.likesCollection.doc(docId).set({
+             postId: postId,
+             userId: this.currentUser.uid
+          }).then(() => {
+             // update post likes
+             fb.postsCollection.doc(postId).update({
+             likeCount: postLikes + 1
+            })
+          })
+          }).catch(err => {
+             console.log(err)
+          })
+   }
   }
 };
 </script>

@@ -64,26 +64,57 @@
                     </div>
                 </div>
             </div>
-            <div class="col2">
-              <div v-if="posts.length">
-                  <div v-for="post in posts" class="post">
-                      <h4>{{ post.title }}</h4>
-                      <h5>{{ post.organizationName }}</h5>
-                      <span>{{ post.eventDate | moment }}</span>
-                      <p>{{ post.content | trimLength }}</p>
-                      <ul>
-                          <li><a @click="likePost(post.id, post.likeCount)">Likes {{ post.likeCount }}</a></li>
-                          <div v-if="post.userId == currentUser.uid">
+            <div v-if="userProfile.accountType == 'Organization'">
+              <div class="col2">
+                <div v-if="posts.length">
+                    <div v-for="post in posts" class="post">
+                      <!-- How do I unshow specific blocks??? -->
+                      <div v-if="post.userId == currentUser.uid">
+                        <h4>{{ post.title }}</h4>
+                        <h5>{{ post.organizationName }}</h5>
+                        <span>{{ post.eventDate | moment }}</span>
+                        <p>{{ post.content | trimLength }}</p>
+                        <!-- Maybe add a unlike button instead of like button since it's already liked -->
+                        <button class="button">Likes {{ post.likeCount }}</button> <!-- They can only view likes -->
+                        <ul>
                             <button @click="deletePost(post.id)" class="button">Delete Post</button>
                             <button @click="editPost(post)" class="button">Edit Post</button>
-                          </div>
-                      </ul>
-                  </div>
-              </div> 
-              <div v-else>
-                  <p class="no-results">There are currently no posts</p>
+                        </ul>
+                      </div>
+                    </div>
+                </div> 
+                <div v-else>
+                    <p class="no-results">There are currently no posts</p>
+                </div>
               </div>
             </div>
+            
+            <div v-else> <!-- Student -->
+               <div class="col2">
+
+                 <!-- Goal is to search through the likes collection
+                     If the like.userID == currentUser.uid
+                     Then show that specific post --> 
+                <!-- Still not work !!!!! -->
+
+                <div v-if="posts.length">
+                    <div v-for="post in posts" class="post">
+                        <h4>{{ post.title }}</h4>
+                        <h5>{{ post.organizationName }}</h5>
+                        <span>{{ post.eventDate | moment }}</span>
+                        <p>{{ post.content | trimLength }}</p>
+
+                        <!-- Maybe add a unlike button instead of like button since it's already liked -->
+                        <!-- Or when it clicks again it unlikes it -->
+                        <button @click="likePost(post.id, post.likeCount)" class="button">Likes {{ post.likeCount }}</button>
+                    </div>
+                </div> 
+                <div v-else>
+                    <p class="no-results">There are currently no posts</p>
+                </div>
+              </div>
+            </div>
+
             <div class="container">
               <input type="text" v-model="search" placeholder="Search..">
               <div class="search"></div>
