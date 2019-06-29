@@ -84,10 +84,9 @@
                   <p class="no-results">There are currently no posts</p>
               </div>
             </div>
-            <div id="wrap">
-              <form action="" autocomplete="off">
-              <input id="search" name="search" type="text" placeholder="Searching Event..."><input id="search_submit" value="Rechercher" type="submit">
-              </form>
+            <div class="container">
+              <input type="text" v-model="search" placeholder="Search..">
+              <div class="search"></div>
             </div>
 
         </section>
