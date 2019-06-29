@@ -2,10 +2,14 @@
     <div id="explore">
         <section>
             <div class="col2">
+              <div class="container">
+                <input type="text" v-model="search" placeholder="Search..">
+                <div class="search"></div>
+              </div>
               <div v-if="posts.length">
-                  <div v-for="post in posts" class="post">
+                  <div v-for="post in filteredPosts" :key="post.id" class="post">
                       <h5>{{ post.title }}</h5>
-                      <span>{{ post.createdOn | formatDate }}</span>
+                      <span>{{ post.createdOn }}</span>
                       <p>{{ post.content | trimLength }}</p>
                       <button class="button" @click="toggleLike">  Likes {{ post.likeCount }}</button>
                       <ul>
@@ -33,17 +37,34 @@ export default {
       },
       search: "",
       contactString: "",
-      performingRequest: false,
+      performingRequest: false
     };
   },
   computed: {
+    filteredPosts() {
+      return this.posts.filter((post) => {
+        return JSON.stringify(post.title).toLowerCase().includes(this.search.toLowerCase());
+      })
+    },
     ...mapState(['userProfile', 'currentUser', 'posts']),
   },
+  filters: {
+      moment: function(date) {
+        return moment(date).format('MMMM Do YYYY, h:mm a');
+      },
+      trimLength: function(val) {
+          if (val.length < 200) {
+              return val
+          }
+          return `${val.substring(0, 200)}...`
+      }
+  },
   methods: {
-      /*
+      
       toggleLike() {
+        
         // Need to grab userID and postID and also update like 
-        fb.likesCollection
+        /*fb.likesCollection
         .doc(this.editId)
         .update({
             likeCount: this.likeCount
@@ -53,9 +74,9 @@ export default {
         })
         .catch(err => {
           console.log(err);
-        });  
+        });  */
      }
-     */
+     
   }
 };
 </script>

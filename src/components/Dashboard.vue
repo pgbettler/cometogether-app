@@ -65,8 +65,12 @@
                 </div>
             </div>
             <div class="col2">
+              <div class="container">
+              <input type="text" v-model="search" placeholder="Search..">
+              <div class="search"></div>
+              </div>
               <div v-if="posts.length">
-                  <div v-for="post in posts" class="post">
+                  <div v-for="post in filteredPosts" :key="post.id" class="post">
                       <h4>{{ post.title }}</h4>
                       <h5>{{ post.organizationName }}</h5>
                       <span>{{ post.eventDate | moment }}</span>
@@ -84,10 +88,7 @@
                   <p class="no-results">There are currently no posts</p>
               </div>
             </div>
-            <div class="container">
-              <input type="text" v-model="search" placeholder="Search..">
-              <div class="search"></div>
-            </div>
+              
 
         </section>
     </div>
@@ -109,11 +110,16 @@ export default {
       },
       showEditForm: false,
       editId: "",
-      search: "",
-      contactString: ""
+      search: ""
     };
   },
   computed: {
+    filteredPosts() {
+      return this.posts.filter((post) => {
+        return JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase());
+
+      })
+    },
     ...mapState(['userProfile', 'currentUser', 'posts']),
   },
   filters: {
