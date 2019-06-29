@@ -1,10 +1,4 @@
 <template>
-<<<<<<< .merge_file_qM8gaW
-    <div>
-        <p>Explore Page
-        </p>
-        <datetime type="date" v-model="date"></datetime>
-=======
     <div id="explore">
         <section>
             <div class="col2">
@@ -24,12 +18,9 @@
               </div>
             </div>
         </section>
->>>>>>> .merge_file_iXTV6D
     </div>
 </template>
 <script>
-<<<<<<< .merge_file_qM8gaW
-=======
 import { mapState } from "vuex";
 const fb = require("../../firebaseConfig.js");
 
@@ -54,5 +45,4 @@ export default {
   methods: {
   }
 };
->>>>>>> .merge_file_iXTV6D
 </script>
