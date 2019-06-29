@@ -1,10 +1,4 @@
 <template>
-<<<<<<< .merge_file_qM8gaW
-    <div>
-        <p>Explore Page
-        </p>
-        <datetime type="date" v-model="date"></datetime>
-=======
     <div id="explore">
         <section>
             <div class="col2">
@@ -13,8 +7,9 @@
                       <h5>{{ post.title }}</h5>
                       <span>{{ post.createdOn | formatDate }}</span>
                       <p>{{ post.content | trimLength }}</p>
+                      <button class="button" @click="toggleLike">  Likes {{ post.likeCount }}</button>
                       <ul>
-                          <li><a>likes {{ post.likes }}</a></li>
+                         <!-- <li><a>Likes: {{ post.likeCount }}</a></li> -->
                           <li><a>view full post</a></li>
                       </ul>
                   </div>
@@ -24,12 +19,9 @@
               </div>
             </div>
         </section>
->>>>>>> .merge_file_iXTV6D
     </div>
 </template>
 <script>
-<<<<<<< .merge_file_qM8gaW
-=======
 import { mapState } from "vuex";
 const fb = require("../../firebaseConfig.js");
 
@@ -37,22 +29,33 @@ export default {
   data() {
     return {
       post: {
-        title: '',
-        content: '',
-        eventDate: '',
-        picture: ''
+        likeCount:''
       },
-      showEditForm: false,
-      editId: "",
       search: "",
-      contactString: ""
+      contactString: "",
+      performingRequest: false,
     };
   },
   computed: {
     ...mapState(['userProfile', 'currentUser', 'posts']),
   },
   methods: {
+      /*
+      toggleLike() {
+        // Need to grab userID and postID and also update like 
+        fb.likesCollection
+        .doc(this.editId)
+        .update({
+            likeCount: this.likeCount
+        })
+        .then(ref => {
+            (this.contact.likeCount = "");
+        })
+        .catch(err => {
+          console.log(err);
+        });  
+     }
+     */
   }
 };
->>>>>>> .merge_file_iXTV6D
 </script>
