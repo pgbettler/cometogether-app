@@ -64,7 +64,6 @@
                     </div>
                 </div>
             </div>
-<<<<<<< HEAD
             <div v-if="userProfile.accountType == 'Organization'">
               <div class="col2">
                 <div v-if="posts.length">
@@ -77,22 +76,6 @@
                         <!-- Maybe add a unlike button instead of like button since it's already liked -->
                         <button class="button">Likes {{ post.likeCount }}</button> <!-- They can only view likes -->
                         <ul>
-=======
-            <div class="col2">
-              <div class="container">
-              <input type="text" v-model="search" placeholder="Search..">
-              <div class="search"></div>
-              </div>
-              <div v-if="posts.length">
-                  <div v-for="post in filteredPosts" :key="post.id" class="post">
-                      <h4>{{ post.title }}</h4>
-                      <h5>{{ post.organizationName }}</h5>
-                      <span>{{ post.eventDate | moment }}</span>
-                      <p>{{ post.content | trimLength }}</p>
-                      <ul>
-                          <li><a @click="likePost(post.id, post.likeCount)">Likes {{ post.likeCount }}</a></li>
-                          <div v-if="post.userId == currentUser.uid">
->>>>>>> AlejandroP
                             <button @click="deletePost(post.id)" class="button">Delete Post</button>
                             <button @click="editPost(post)" class="button">Edit Post</button>
                         </ul>
@@ -130,15 +113,11 @@
                 </div>
               </div>
             </div>
-<<<<<<< HEAD
 
             <div class="container">
               <input type="text" v-model="search" placeholder="Search..">
               <div class="search"></div>
             </div>
-=======
-              
->>>>>>> AlejandroP
 
         </section>
     </div>
@@ -160,16 +139,11 @@ export default {
       },
       showEditForm: false,
       editId: "",
-      search: ""
+      search: "",
+      contactString: ""
     };
   },
   computed: {
-    filteredPosts() {
-      return this.posts.filter((post) => {
-        return JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase());
-
-      })
-    },
     ...mapState(['userProfile', 'currentUser', 'posts']),
   },
   filters: {
