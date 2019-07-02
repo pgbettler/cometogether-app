@@ -8,6 +8,7 @@
                       <span>{{ post.createdOn | formatDate }}</span>
                       <p>{{ post.content | trimLength }}</p>
                       <button class="button" @click="toggleLike">  Likes {{ post.likeCount }}</button>
+                      <button class="button" @click="followOrg(post.userId)" id="follow">{{follow.text}}</button>
                       <ul>
                          <!-- <li><a>Likes: {{ post.likeCount }}</a></li> -->
                           <li><a>view full post</a></li>
@@ -25,6 +26,7 @@
 import { mapState } from "vuex";
 const fb = require("../../firebaseConfig.js");
 
+
 export default {
   data() {
     return {
@@ -34,6 +36,10 @@ export default {
       search: "",
       contactString: "",
       performingRequest: false,
+      follow: { 
+        text: 'Follow Org'
+      },
+      followFlag: true,
     };
   },
   computed: {
@@ -56,6 +62,24 @@ export default {
         });  
      }
      */
+    followOrg(orgId){
+      //follow flag will change text to follow or unfollow
+      user=FirebaseAuth.getInstance().getCurrentUser();
+      uid =user.getUid();
+      
+      if(this.followFlag == true) {
+        this.follow.text="UnFollow";
+        var docData = {
+          userId: uid, 
+          orgId: orgId
+        }
+        fb.followsCollection.doc().set(docData).then(function() {
+          console.log("Document successfully written!");
+          });;
+        
+      }
+
+    }
   }
 };
 </script>

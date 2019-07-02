@@ -27,6 +27,7 @@ db.settings(settings)
 const usersCollection = db.collection("users")
 const postsCollection = db.collection("posts")
 const likesCollection = db.collection("likes")
+const followsCollection = db.collection("follows")
 const organizationsCollection = db.collection("organizations")
 
 export {
@@ -36,5 +37,6 @@ export {
     usersCollection,
     postsCollection,
     likesCollection,
+    followsCollection,
     organizationsCollection
 }
