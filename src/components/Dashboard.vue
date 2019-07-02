@@ -67,9 +67,8 @@
             <div v-if="userProfile.accountType == 'Organization'">
               <div class="col2">
                 <div v-if="posts.length">
-                    <div v-for="post in posts" class="post">
-                      <!-- How do I unshow specific blocks??? -->
-                      <div v-if="post.userId == currentUser.uid">
+                    <div v-for="post in posts">
+                      <div v-if="post.userId == currentUser.uid" class="post">
                         <h4>{{ post.title }}</h4>
                         <h5>{{ post.organizationName }}</h5>
                         <span>{{ post.eventDate | moment }}</span>
