@@ -108,10 +108,17 @@ header {
     }
 
     .col1 {
-        flex: 0 0 30%;
+        flex: 0 0 40%;
         @media screen and (max-width: 1000px) {
     		flex: 0 0 40%;
     	}
+    }
+    .col2 {
+        flex: 0 0 40%;
+        @media screen and (max-width: 1000px) {
+    		flex: 0 0 50%;
+    	}
+
     }
     .profile {
         background: $white;
@@ -132,7 +139,18 @@ header {
         }
         textarea {
             height: 50px;
-            margin: 0;
+            width: 100%;
+            margin-bottom: .5rem;
+        }
+
+        .details {
+            height: 150px;
+        }
+
+        .datepicker {
+            height: 50px;
+            width: 100%;
+            margin-bottom: .5rem;
         }
         .button {
             margin-top: 1rem;
@@ -206,6 +224,27 @@ header {
         }
         p {
             margin: 0;
+        }
+
+        .postcontent {
+            float: left;
+        }
+            
+
+        .updatebuttons {
+
+            display: block;
+            overflow: hidden;
+            ul {
+                vertical-align: 0%;
+            }
+
+            .button {
+                display: block;
+                width: 30px;
+                margin: 0.5rem;
+            }
+
         }
     }
     .no-results {
@@ -307,6 +346,7 @@ header {
             }
         }
     }
+
 }
 
 // explore

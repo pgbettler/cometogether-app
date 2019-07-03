@@ -38,10 +38,10 @@
                             <datetime 
                               type="datetime" 
                               v-model.trim="post.eventDate" 
-                              class="theme-gold"
+                              class = "datepicker"
                               :minute-step="15"
                               use12-hour></datetime>
-                            <textarea v-model.trim="post.content" placeholder = "Details"></textarea>
+                            <textarea v-model.trim="post.content" placeholder = "Details" class="details"></textarea>
                             <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
                             <button @click="saveEditContact" class="button">Save</button>
                         </form>
@@ -54,10 +54,10 @@
                               placeholder= 'Click to Add Event Date'
                               type="datetime" 
                               v-model.trim="post.eventDate" 
-                              class="theme-gold"
+                              class="datepicker"
                               :minute-step="15"
                               use12-hour></datetime>
-                            <textarea v-model.trim="post.content" placeholder = "Details"></textarea>
+                            <textarea v-model.trim="post.content" placeholder = "Details" class="details"></textarea>
                             <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
                             <button @click="createPost" class="button">Post</button>
                         </form>
@@ -69,16 +69,20 @@
                 <div v-if="posts.length">
                     <div v-for="post in posts">
                       <div v-if="post.userId == currentUser.uid" class="post">
-                        <h4>{{ post.title }}</h4>
-                        <h5>{{ post.organizationName }}</h5>
-                        <span>{{ post.eventDate | moment }}</span>
-                        <p>{{ post.content | trimLength }}</p>
-                        <!-- Maybe add a unlike button instead of like button since it's already liked -->
-                        <button class="button">Likes {{ post.likeCount }}</button> <!-- They can only view likes -->
-                        <ul>
-                            <button @click="deletePost(post.id)" class="button">Delete Post</button>
-                            <button @click="editPost(post)" class="button">Edit Post</button>
-                        </ul>
+                        <div class = "postcontent">
+                          <h4>{{ post.title }}</h4>
+                          <h5>{{ post.organizationName }}</h5>
+                          <span>{{ post.eventDate | moment }}</span>
+                          <p>{{ post.content | trimLength }}</p>
+                          <!-- Maybe add a unlike button instead of like button since it's already liked -->
+                          <button class="button">Likes {{ post.likeCount }}</button> <!-- They can only view likes -->
+                        </div>
+                        <div class="updatebuttons">
+                          <ul>
+                              <button @click="deletePost(post.id)" class="button">Delete Post</button>
+                              <button @click="editPost(post)" class="button">Edit Post</button>
+                          </ul>
+                        </div>
                       </div>
                     </div>
                 </div> 
