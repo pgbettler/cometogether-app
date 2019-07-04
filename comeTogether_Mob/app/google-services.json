@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "109482956505",
+    "firebase_url": "https://cometogether-app.firebaseio.com",
+    "project_id": "cometogether-app",
+    "storage_bucket": "cometogether-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:109482956505:android:062ea97379ce4245",
+        "android_client_info": {
+          "package_name": "com.genius.cometogether_mob"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "109482956505-53nnbvvnj2fm50jviv895bdg06srf98o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.genius.cometogether_mob",
+            "certificate_hash": "59ba1f536df98ce758220814267c6d3da82fe171"
+          }
+        },
+        {
+          "client_id": "109482956505-k6dn1ha9hi4v3e2c9g1iqnoqi4qtq5q8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-TvcgKV0BugcxW4pKj1qO0nNcTTFNXzU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "109482956505-k6dn1ha9hi4v3e2c9g1iqnoqi4qtq5q8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
