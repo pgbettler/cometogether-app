@@ -3,7 +3,7 @@
         <section>
             <div class="col2">
               <div v-if="posts.length">
-                  <div v-for="post in posts" class="post">
+                  <div v-for = "post in filteredPosts" :key = "post.id" class="post">
                       <h4>{{ post.title }}</h4>
                       <h5>{{ post.organizationName }}</h5>
                       <span>{{ post.eventDate | moment }}</span>
@@ -38,6 +38,11 @@ export default {
     };
   },
   computed: {
+    filteredPosts() {
+      return this.posts.filter((post) => {
+        return JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase());
+      })
+    },
     ...mapState(['userProfile', 'currentUser', 'posts']),
   },
   methods: {
