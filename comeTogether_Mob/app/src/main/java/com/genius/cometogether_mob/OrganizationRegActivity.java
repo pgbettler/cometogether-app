@@ -15,33 +15,35 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class OrganizationRegActivity extends AppCompatActivity implements View.OnClickListener {
 
-    FirebaseAuth mAuth;
-    EditText edit_text_email,edit_text_password;
     ProgressBar progressBar;
+    EditText edit_text_email, edit_text_password, edit_text_orgName, edit_text_orgDescrip;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_organization_reg);
 
+        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        // initialize UI
+        // Initialize UI
         initUI();
     }
 
     private void initUI()
     {
-        // Set a listener on buttons
-        findViewById(R.id.button_register_student).setOnClickListener(this);
-        findViewById(R.id.button_register_organi).setOnClickListener(this);
-        findViewById(R.id.button_sign_in).setOnClickListener(this);
+        findViewById(R.id.btn_back_to_login).setOnClickListener(this);
+        findViewById(R.id.btn_create_org_acct).setOnClickListener(this);
         progressBar = findViewById(R.id.progressbar);
         edit_text_email = findViewById(R.id.edit_text_email);
         edit_text_password = findViewById(R.id.edit_text_password);
+        edit_text_orgName = findViewById(R.id.edit_text_orgName);
+        edit_text_orgDescrip = findViewById(R.id.edit_text_orgDescrip);
     }
 
     @Override
@@ -49,38 +51,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     {
         Intent intent = new Intent();
 
-        switch (view.getId())
+        switch(view.getId())
         {
-            // Student registration
-            case R.id.button_register_student:
+            case R.id.btn_back_to_login:
             {
-                intent.setClass(getApplicationContext(), StudentRegActivity.class);
+                intent.setClass(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
                 break;
             }
 
-            // Organization registration
-            case R.id.button_register_organi:
+            case R.id.btn_create_org_acct:
             {
-                intent.setClass(getApplicationContext(), OrganizationRegActivity.class);
-                startActivity(intent);
+                registerOrganization();
                 break;
             }
-
-            // Sign in
-            case R.id.button_sign_in:
-            {
-                userLogin();
-                break;
-            }
-
         }
+
     }
 
-    private void userLogin()
+    private void registerOrganization()
     {
         String email = edit_text_email.getText().toString().trim();
         String password = edit_text_password.getText().toString().trim();
+        String orgName = edit_text_orgName.getText().toString().trim();
+        String orgDescp = edit_text_orgDescrip.getText().toString().trim();
 
         if (email.isEmpty())
         {
@@ -110,22 +104,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             return;
         }
 
+        if (orgName.isEmpty())
+        {
+            edit_text_orgName.setError("Please enter your first name.");
+            edit_text_orgName.requestFocus();
+            return;
+        }
+
         progressBar.setVisibility(View.VISIBLE);
 
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>()
+        {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task)
             {
                 progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful())
                 {
-                    Intent intent = new Intent(LoginActivity.this, ExploreActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                    Toast.makeText(getApplicationContext(), "Organization successfully registered", Toast.LENGTH_LONG).show();
                 }
                 else
                 {
-                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    // Account already registered
+                    if (task.getException() instanceof FirebaseAuthUserCollisionException)
+                    {
+                        Toast.makeText(getApplicationContext(), "This account already registered.", Toast.LENGTH_LONG).show();
+                    }
+                    else
+                    {
+                        Toast.makeText(getApplicationContext(), "Registration failed.", Toast.LENGTH_LONG).show();
+                    }
                 }
 
             }
