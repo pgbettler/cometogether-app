@@ -5,9 +5,9 @@
               <div v-if="posts.length">
                   <div v-for="post in posts" class="post">
                       <h5>{{ post.title }}</h5>
-                      <span>{{ post.createdOn | formatDate }}</span>
+                      <!-- <span>{{ post.createdOn | formatDate }}</span> -->
                       <p>{{ post.content | trimLength }}</p>
-                      <button class="button" @click="toggleLike">  Likes {{ post.likeCount }}</button>
+                      <!-- <button class="button" @click="toggleLike">  Likes {{ post.likeCount }}</button> -->
                       <button class="button" @click="followOrg(post.userId)" id="follow">{{follow.text}}</button>
                       <ul>
                          <!-- <li><a>Likes: {{ post.likeCount }}</a></li> -->
@@ -63,22 +63,29 @@ export default {
      }
      */
     followOrg(orgId){
-      //follow flag will change text to follow or unfollow
-      user=FirebaseAuth.getInstance().getCurrentUser();
-      uid =user.getUid();
       
-      if(this.followFlag == true) {
+      let uid = this.currentUser.uid;
+      console.log(uid);
+      console.log(orgId);
+      if(this.folowFlag == true) {
         this.follow.text="UnFollow";
-        var docData = {
-          userId: uid, 
-          orgId: orgId
-        }
-        fb.followsCollection.doc().set(docData).then(function() {
-          console.log("Document successfully written!");
-          });;
-        
-      }
 
+        // fb.followsCollection.add({
+        //   orgId: orgId1,
+        //   userId: uid
+        // })
+        // .then(ref => {
+        //   console.log("Document successfully written!");
+        //   })
+        // .catch(err => {
+        //   console.log(err);
+        //   });
+        
+        fb.collection("follows").add({
+          orgId: orgId,
+          userId: uid
+        });
+      }
     }
   }
 };
