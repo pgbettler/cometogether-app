@@ -67,25 +67,33 @@ export default {
       let uid = this.currentUser.uid;
       console.log(uid);
       console.log(orgId);
-      if(this.folowFlag == true) {
+     if (this.followFlag == true) {
         this.follow.text="UnFollow";
 
-        // fb.followsCollection.add({
-        //   orgId: orgId1,
-        //   userId: uid
-        // })
-        // .then(ref => {
-        //   console.log("Document successfully written!");
-        //   })
-        // .catch(err => {
-        //   console.log(err);
-        //   });
-        
-        fb.collection("follows").add({
+        fb.followsCollection.add({
           orgId: orgId,
           userId: uid
-        });
-      }
+        })
+        .then(ref => {
+          console.log("Document successfully written!");
+          })
+        .catch(err => {
+          console.log(err);
+          });
+        this.followFlag = false;
+     } else {
+       this.follow.text = "Follow";
+
+       var followsRef = fb.followsCollection.where("orgId", "==", orgId).where("userId", "==", uid);
+       followsRef.get().then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            doc.ref.delete();
+          });
+       });
+       this.followFlag = true;
+     }
+     
+    
     }
   }
 };
