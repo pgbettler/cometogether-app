@@ -149,6 +149,7 @@ export default {
   },
   computed: {
     ...mapState(['userProfile', 'currentUser', 'posts']),
+    
   },
   filters: {
       moment: function(date) {
