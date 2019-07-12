@@ -66,9 +66,12 @@
             </div>
             <div v-if="userProfile.accountType == 'Organization'">
               <div class="col2">
-                <div v-if="posts.length">
-                    <div v-for="post in posts">
-                      <div v-if="post.userId == currentUser.uid" class="post">
+                <div class="container">
+                  <input type="text" v-model="search" placeholder="Search...">
+                  </div>
+                <div v-if= "posts.length">
+                    <div v-for = "post in filteredPosts" :key = "post.id" class="post">
+                     <div v-if="post.userId == currentUser.uid" class="post">
                         <div class = "postcontent">
                           <h4>{{ post.title }}</h4>
                           <h5>{{ post.organizationName }}</h5>
@@ -99,9 +102,9 @@
                      If the like.userID == currentUser.uid
                      Then show that specific post --> 
                 <!-- Still not work !!!!! -->
-
+                <div class= "search"> </div>
                 <div v-if="posts.length">
-                    <div v-for="post in posts" class="post">
+                    <div v-for = "post in filteredPosts" :key = "post.id" class="post">
                         <h4>{{ post.title }}</h4>
                         <h5>{{ post.organizationName }}</h5>
                         <span>{{ post.eventDate | moment }}</span>
@@ -143,11 +146,15 @@ export default {
       },
       showEditForm: false,
       editId: "",
-      search: "",
-      contactString: ""
+      search: ""
     };
   },
   computed: {
+   filteredPosts() {
+      return this.posts.filter((post) => {
+        return JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase());
+      })
+    },
     ...mapState(['userProfile', 'currentUser', 'posts']),
     
   },
