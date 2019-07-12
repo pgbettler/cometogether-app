@@ -5,6 +5,7 @@ import firebase from 'firebase'
 import Login from '@/components/Login'
 import Dashboard from '@/components/Dashboard'
 import Explore from '@/components/Explore'
+import Orgview from '@/components/Orgview'
 
 Vue.use(Router)
 
@@ -32,6 +33,14 @@ const router = new Router({
             path: '/explore',
             name: 'Explore',
             component: Explore,
+            meta: {
+                requiresAuth: true
+            }
+        },
+        {
+            path: '/org',
+            name: 'Orgview',
+            component: Orgview,
             meta: {
                 requiresAuth: true
             }
