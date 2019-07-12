@@ -38,7 +38,7 @@ const router = new Router({
             }
         },
         {
-            path: '/org',
+            path: '/org/:id',
             name: 'Orgview',
             component: Orgview,
             meta: {

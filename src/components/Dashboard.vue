@@ -64,6 +64,13 @@
                     </div>
                 </div>
             </div>
+
+<!-- Right Hand Side -->
+
+            <!-- Organization View
+              * They only see posts by themselves on their Dashboard 
+            -->
+
             <div v-if="userProfile.accountType == 'Organization'">
               <div class="col2">
                 <div class="container">
@@ -74,7 +81,7 @@
                      <div v-if="post.userId == currentUser.uid" class="post">
                         <div class = "postcontent">
                           <h4>{{ post.title }}</h4>
-                          <h5>{{ post.organizationName }}</h5>
+                          <router-link :to="{ path: '/org/'+ post.userId}"><h5>{{ post.organizationName }}</h5></router-link>
                           <span>{{ post.eventDate | moment }}</span>
                           <p>{{ post.content | trimLength }}</p>
                           <!-- Maybe add a unlike button instead of like button since it's already liked -->

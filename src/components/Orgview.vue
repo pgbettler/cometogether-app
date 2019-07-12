@@ -1,3 +1,12 @@
+<!--
+  OrgView is the component that shows information about an organization. This page should appear for a student
+  who is interested in learning more about an organization.
+
+  Left Hand Side: Information about Organization
+
+  Right Hand Side: Posts by Organization
+-->
+
 <template>
     <div id="dashboard">
         <section>
@@ -23,7 +32,7 @@
                   </div>
                 <div v-if= "posts.length">
                     <div v-for = "post in filteredPosts" :key = "post.id" class="post">
-                     <div v-if="post.userId == currentUser.uid" class="post">
+                     <div v-if="post.userId == this.orgId" class="post">
                         <div class = "postcontent">
                           <h4>{{ post.title }}</h4>
                           <h5>{{ post.organizationName }}</h5>
@@ -54,6 +63,7 @@ import { mapState } from "vuex";
 import moment from 'moment'; //this is used for date formatting
 const fb = require("../../firebaseConfig.js");
 
+
 export default {
   data() {
     return {
@@ -66,7 +76,7 @@ export default {
       },
       showEditForm: false,
       editId: "",
-      search: ""
+      search: "",
     };
   },
   computed: {
@@ -109,4 +119,6 @@ export default {
    }
   }
 };
+
+ console.log('The id is: ' + this.$route.params.id);
 </script>
