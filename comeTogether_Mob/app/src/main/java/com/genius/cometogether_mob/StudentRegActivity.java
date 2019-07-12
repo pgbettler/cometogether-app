@@ -16,12 +16,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class StudentRegActivity extends AppCompatActivity implements View.OnClickListener {
 
     ProgressBar progressBar;
     EditText edit_text_email, edit_text_password, edit_text_firstName, edit_text_lastName;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,10 +33,11 @@ public class StudentRegActivity extends AppCompatActivity implements View.OnClic
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        // Initialize Firestore
+        db = FirebaseFirestore.getInstance();
 
         // Initialize UI
         initUI();
-
     }
 
     private void initUI()
@@ -119,6 +123,17 @@ public class StudentRegActivity extends AppCompatActivity implements View.OnClic
             return;
         }
 
+        // Store to user collection
+        final CollectionReference dbStudent = db.collection("users");
+        // Set up constructor
+        final User student = new User(
+                "Student",
+                firstName,
+                lastName,
+                "",
+                ""
+        );
+
         progressBar.setVisibility(View.VISIBLE);
 
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>()
@@ -129,6 +144,11 @@ public class StudentRegActivity extends AppCompatActivity implements View.OnClic
                 progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful())
                 {
+                    // Retrieve the User UID
+                    String userId = mAuth.getUid();
+                    // Store this student to "users" collection using this user's UID
+                    dbStudent.document(userId).set(student);
+
                     Toast.makeText(getApplicationContext(), "Student successfully registered", Toast.LENGTH_LONG).show();
                 }
                 else
@@ -146,5 +166,6 @@ public class StudentRegActivity extends AppCompatActivity implements View.OnClic
 
             }
         });
+
     }
 }

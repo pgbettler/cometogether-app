@@ -16,12 +16,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class OrganizationRegActivity extends AppCompatActivity implements View.OnClickListener {
 
     ProgressBar progressBar;
     EditText edit_text_email, edit_text_password, edit_text_orgName, edit_text_orgDescrip;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,8 @@ public class OrganizationRegActivity extends AppCompatActivity implements View.O
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        // Initialize Firestore
+        db = FirebaseFirestore.getInstance();
 
         // Initialize UI
         initUI();
@@ -111,6 +116,17 @@ public class OrganizationRegActivity extends AppCompatActivity implements View.O
             return;
         }
 
+        // Store to user collection
+        final CollectionReference dbOrganization = db.collection("users");
+        // Set up constructor
+        final User organization = new User(
+                "Organization",
+                "",
+                "",
+                orgName,
+                orgDescp
+        );
+
         progressBar.setVisibility(View.VISIBLE);
 
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>()
@@ -121,6 +137,11 @@ public class OrganizationRegActivity extends AppCompatActivity implements View.O
                 progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful())
                 {
+                    // Retrieve the User UID
+                    String userId = mAuth.getUid();
+                    // Store this organization to "users" collection using this user's UID
+                    dbOrganization.document(userId).set(organization);
+
                     Toast.makeText(getApplicationContext(), "Organization successfully registered", Toast.LENGTH_LONG).show();
                 }
                 else
