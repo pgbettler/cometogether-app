@@ -32,6 +32,20 @@ fb.auth.onAuthStateChanged(user => {
          store.commit('setPosts', postsArray)
          store.commit('setLikedPosts', userLikedPosts)
         })
+      
+      fb.followCollection.where("userId", "==", user.uid).onSnapshot(querySnapshot => {
+        let followedArray = []
+
+        querySnapshot.forEach(doc => {
+          let orgId = doc.data().orgId
+          fb.usersCollection.doc(orgId).get().then(res => {
+            followedArray.push(res.data())
+          })
+        })
+
+        console.log(followedArray)
+        store.commit('setFollowedOrgs', followedArray)
+      })
     }
 })
 
@@ -40,7 +54,8 @@ export const store = new Vuex.Store({
     currentUser: null,
     userProfile: {},
     posts: [],
-    likedPosts: []
+    likedPosts: [],
+    followedOrgs: []
 
   },
   actions: {
@@ -69,6 +84,9 @@ export const store = new Vuex.Store({
     },
     setLikedPosts(state, val) {
       state.likedPosts = val
+    },
+    setFollowedOrgs(state, val) {
+      state.followedOrgs = val
     }
   }
 })

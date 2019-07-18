@@ -16,8 +16,9 @@
                     <img src="../assets/images/knightprofile.jpg" />
                     <h5>{{ userProfile.firstName }} {{ userProfile.lastName }}</h5>
                     <p>{{ userProfile.accountType }}</p>
-                    <div class="liked-org">
-                        <p>This section will show liked organizations</p>
+                    <h5>Followed Organizations:</h5>
+                    <div v-for="org in followedOrgs" :key = "org.uid" class="liked-org">
+                        <p>{{ org.organizationName }}</p>
                     </div>
                 </div>
               <!-- Organization View:
@@ -117,6 +118,7 @@
                         <!-- Maybe add a unlike button instead of like button since it's already liked -->
                         <!-- Or when it clicks again it unlikes it -->
                         <button @click="toggleLike(post.id, post.likeCount)" class="button">Likes {{ post.likeCount }}</button>
+                        <button @click="followOrg(post.userId)" class="button">Follow {{ post.organizationName }}</button>
                     </div>
                 </div> 
                 <div v-else>
@@ -153,6 +155,9 @@ export default {
         likeCount: '',
         location: ''
       },
+      org: {
+        organizationName: ''
+      },
       showUploadForm: '',
       showEditForm: false,
       editId: "",
@@ -170,7 +175,7 @@ export default {
         return JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase());
       })
     },
-    ...mapState(['userProfile', 'currentUser', 'posts', 'likedPosts']),
+    ...mapState(['userProfile', 'currentUser', 'posts', 'likedPosts', 'followedOrgs']),
     
   },
   filters: {
@@ -217,6 +222,25 @@ export default {
         this.liked = !this.liked;
     },
 
+    followOrg(orgId) {
+      let docId = `${this.currentUser.uid}_${orgId}`
+      fb.followCollection.doc(docId).get().then(doc => {
+        if (doc.exists) { return }
+        fb.followCollection.doc(docId).set({
+          orgId: orgId,
+          userId: this.currentUser.uid
+        }).then(() => {
+          if (fb.organizationsCollection.doc(orgId).get(followCount) > 0){
+            currentFollowCount = fb.organizationsCollection.doc(orgId).get(followCount)
+          }
+          else {currentFollowCount = 0}
+          fb.organizationsCollection.doc(orgId).update({
+            followCount: currentFollowCount + 1
+          })
+        })
+      })
+
+    },
     likePost(postId, postLikes) {
       let docId = `${this.currentUser.uid}_${postId}`
         fb.likesCollection.doc(docId).get().then(doc => {
