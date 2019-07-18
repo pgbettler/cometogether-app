@@ -1,5 +1,6 @@
 <template>
     <div id="dashboard">
+      <UploadImage v-if='showUploadForm' v-on:childCall='toggleUploadForm(false)' class="block"></UploadImage>
         <section>
             <div class="col1">
               <!-- Depending on User Type,
@@ -12,6 +13,7 @@
                   Liked Organizations List
               -->
                 <div class="profile" v-if="userProfile.accountType == 'Student'">
+                    <img src="../assets/images/knightprofile.jpg" />
                     <h5>{{ userProfile.firstName }} {{ userProfile.lastName }}</h5>
                     <p>{{ userProfile.accountType }}</p>
                     <div class="liked-org">
@@ -25,6 +27,7 @@
                   Create New Post
               -->
                 <div class="profile" v-if="userProfile.accountType == 'Organization'">
+                    <img src="../assets/images/knightprofile.jpg" />
                     <h3>{{ userProfile.organizationName }}</h3>
                     <p><i>{{ userProfile.accountType }}</i></p>
                     <h5>{{ userProfile.organizationDetails | trimLength }}</h5>
@@ -64,13 +67,14 @@
                     </div>
                 </div>
             </div>
+
             <div v-if="userProfile.accountType == 'Organization'">
               <div class="col2">
                 <div class="container">
                   <input type="text" v-model="search" placeholder="Search...">
                   </div>
                 <div v-if= "posts.length">
-                    <div v-for = "post in filteredPosts" :key = "post.id" class="post">
+                    <div v-for = "post in filteredPosts" :key = "post.id">
                      <div v-if="post.userId == currentUser.uid" class="post">
                         <div class = "postcontent">
                           <h4>{{ post.title }}</h4>
@@ -103,8 +107,8 @@
                      Then show that specific post --> 
                 <!-- Still not work !!!!! -->
                 <div class= "search"> </div>
-                <div v-if="posts.length">
-                    <div v-for = "post in filteredPosts" :key = "post.id" class="post">
+                <div v-if="likedPosts.length">
+                    <div v-for = "post in filteredLikedPosts" :key = "post.id" class="post">
                         <h4>{{ post.title }}</h4>
                         <h5>{{ post.organizationName }}</h5>
                         <span>{{ post.eventDate | moment }}</span>
@@ -130,10 +134,15 @@
     </div>
 </template>
 <script>
+
 import { mapState } from "vuex";
 import moment from 'moment'; //this is used for date formatting
+import UploadImage from './UploadImage';
 const fb = require("../../firebaseConfig.js");
 export default {
+  components: {
+    UploadImage
+  },
   data() {
     return {
       post: {
@@ -144,6 +153,7 @@ export default {
         likeCount: '',
         location: ''
       },
+      showUploadForm: '',
       showEditForm: false,
       editId: "",
       search: ""
@@ -151,11 +161,18 @@ export default {
   },
   computed: {
    filteredPosts() {
+     console.log("hello")
       return this.posts.filter((post) => {
         return JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase());
       })
     },
-    ...mapState(['userProfile', 'currentUser', 'posts']),
+   filteredLikedPosts() {
+     console.log("hello")
+      return this.likedPosts.filter((post) => {
+        return JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase());
+      })
+    },
+    ...mapState(['userProfile', 'currentUser', 'posts', 'likedPosts']),
     
   },
   filters: {
@@ -241,6 +258,11 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    toggleUploadForm(boolean) {
+      this.showUploadForm= boolean;
+      console.log('close received');
+      console.log(boolean);
     },
     toggleForm() {
       // hides the appropriate forms at the button clicks
