@@ -1,5 +1,6 @@
 <template>
     <div id="dashboard">
+      <UploadImage v-if='showUploadForm' v-on:childCall='toggleUploadForm(false)' class="block"></UploadImage>
         <section>
             <div class="col1">
               <!-- Depending on User Type,
@@ -58,7 +59,10 @@
                               :minute-step="15"
                               use12-hour></datetime>
                             <textarea v-model.trim="post.content" placeholder = "Details" class="details"></textarea>
-                            <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
+                            ///////////////////
+                            <button raised class="button" @click='toggleUploadForm(true)'>Upload a Photo</button>
+                            
+                            /////////////////////
                             <button @click="createPost" class="button">Post</button>
                         </form>
                     </div>
@@ -130,11 +134,16 @@
     </div>
 </template>
 <script>
+
 import { mapState } from "vuex";
 import moment from 'moment'; //this is used for date formatting
+import UploadImage from './UploadImage';
 const fb = require("../../firebaseConfig.js");
 
 export default {
+  components: {
+    UploadImage
+  },
   data() {
     return {
       post: {
@@ -144,6 +153,7 @@ export default {
         picture: '',
         likeCount: ''
       },
+      showUploadForm: '',
       showEditForm: false,
       editId: "",
       search: ""
@@ -216,6 +226,11 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    toggleUploadForm(boolean) {
+      this.showUploadForm= boolean;
+      console.log('close received');
+      console.log(boolean);
     },
     toggleForm() {
       // hides the appropriate forms at the button clicks
