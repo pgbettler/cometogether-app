@@ -13,6 +13,7 @@
                   Liked Organizations List
               -->
                 <div class="profile" v-if="userProfile.accountType == 'Student'">
+                    <img src="../assets/images/knightprofile.jpg" />
                     <h5>{{ userProfile.firstName }} {{ userProfile.lastName }}</h5>
                     <p>{{ userProfile.accountType }}</p>
                     <div class="liked-org">
@@ -26,6 +27,7 @@
                   Create New Post
               -->
                 <div class="profile" v-if="userProfile.accountType == 'Organization'">
+                    <img src="../assets/images/knightprofile.jpg" />
                     <h3>{{ userProfile.organizationName }}</h3>
                     <p><i>{{ userProfile.accountType }}</i></p>
                     <h5>{{ userProfile.organizationDetails | trimLength }}</h5>
