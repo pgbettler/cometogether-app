@@ -6,7 +6,11 @@
                  this seciton while show Student or Organization Sideview-->
 
 
-              <!-- StudentInfo -->
+              <!-- Student View:
+                  FirstName LastName
+                  Student
+                  Liked Organizations List
+              -->
                 <div class="profile" v-if="userProfile.accountType == 'Student'">
                     <h5>{{ userProfile.firstName }} {{ userProfile.lastName }}</h5>
                     <p>{{ userProfile.accountType }}</p>
@@ -14,32 +18,72 @@
                         <p>This section will show liked organizations</p>
                     </div>
                 </div>
-
-              <!-- OrgEditInfo -->
+              <!-- Organization View:
+                  OrganizationName
+                  Organization
+                  Organization Description
+                  Create New Post
+              -->
                 <div class="profile" v-if="userProfile.accountType == 'Organization'">
-                  <OrgEditInfo :toggleForm='toggleForm'></OrgEditInfo>
-                </div>
-              
-              <!--OrgInfo -->
-                <div class="profile">
-                  <OrgInfo></OrgInfo>
+                    <h3>{{ userProfile.organizationName }}</h3>
+                    <p><i>{{ userProfile.accountType }}</i></p>
+                    <h5>{{ userProfile.organizationDetails | trimLength }}</h5>
+                    <br>
+                    <div class="edit-post" v-if="showEditForm">
+                     <p>Edit Post</p>
+                        <form>
+                            <textarea v-model.trim="post.title" placeholder="Event Name"></textarea><p>required</p>
+                            <datetime 
+                              type="datetime" 
+                              v-model.trim="post.eventDate" 
+                              class = "datepicker"
+                              :minute-step="15"
+                              use12-hour></datetime>
+                            <textarea v-model.trim="post.content" placeholder = "Details" class="details"></textarea>
+                            <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
+                            <button @click="saveEditContact" class="button">Save</button>
+                        </form>
+                    </div>
+                    <div v-if="!showEditForm" class="create-post">
+                        <p>Create New Event</p>
+                        <form @submit.prevent>
+                            <textarea v-model.trim="post.title" placeholder="Event Name"></textarea>
+                            <datetime 
+                              placeholder= 'Click to Add Event Date'
+                              type="datetime" 
+                              v-model.trim="post.eventDate" 
+                              class="datepicker"
+                              :minute-step="15"
+                              use12-hour></datetime>
+                            <textarea v-model.trim="post.content" placeholder = "Details" class="details"></textarea>
+                            <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
+                            <button @click="createPost" class="button">Post</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-
-            <div class="col2">
-              <Posts></Posts>
-            </div>
-
-
             <div v-if="userProfile.accountType == 'Organization'">
               <div class="col2">
                 <div class="container">
                   <input type="text" v-model="search" placeholder="Search...">
                   </div>
                 <div v-if= "posts.length">
-                    <div v-for = "post in filteredPosts" :key = "post.id">
+                    <div v-for = "post in filteredPosts" :key = "post.id" class="post">
                      <div v-if="post.userId == currentUser.uid" class="post">
-                          <Post :post='post' :showUpdateButtons='true' v-on:editPost=""></Post>
+                        <div class = "postcontent">
+                          <h4>{{ post.title }}</h4>
+                          <h5>{{ post.organizationName }}</h5>
+                          <span>{{ post.eventDate | moment }}</span>
+                          <p>{{ post.content | trimLength }}</p>
+                          <!-- Maybe add a unlike button instead of like button since it's already liked -->
+                          <button class="button">Likes {{ post.likeCount }}</button> <!-- They can only view likes -->
+                        </div>
+                        <div class="updatebuttons">
+                          <ul>
+                              <button @click="deletePost(post.id)" class="button">Delete Post</button>
+                              <button @click="editPost(post)" class="button">Edit Post</button>
+                          </ul>
+                        </div>
                       </div>
                     </div>
                 </div> 
@@ -59,7 +103,14 @@
                 <div class= "search"> </div>
                 <div v-if="posts.length">
                     <div v-for = "post in filteredPosts" :key = "post.id" class="post">
-                        <Post :post='post' :showUpdateButtons='false'></Post>
+                        <h4>{{ post.title }}</h4>
+                        <h5>{{ post.organizationName }}</h5>
+                        <span>{{ post.eventDate | moment }}</span>
+                        <p>{{ post.content | trimLength }}</p>
+
+                        <!-- Maybe add a unlike button instead of like button since it's already liked -->
+                        <!-- Or when it clicks again it unlikes it -->
+                        <button @click="toggleLike(post.id, post.likeCount)" class="button">Likes {{ post.likeCount }}</button>
                     </div>
                 </div> 
                 <div v-else>
@@ -77,27 +128,10 @@
     </div>
 </template>
 <script>
-
-import StudentInfo from './DashboardInfo/StudentInfo'
-import OrgInfo from './DashboardInfo/OrgInfo'
-import OrgEditInfo from './DashboardInfo/OrgEditInfo'
-import Posts from './Post/Posts'
-import Post from './Post/Post'
-
-
-import { mapState } from "vuex"
-import moment from 'moment' //this is used for date formatting
-
+import { mapState } from "vuex";
+import moment from 'moment'; //this is used for date formatting
 const fb = require("../../firebaseConfig.js");
-
 export default {
-  components: {
-    StudentInfo,
-    OrgInfo,
-    OrgEditInfo,
-    Posts,
-    Post
-  },
   data() {
     return {
       post: {
@@ -133,6 +167,35 @@ export default {
       }
   },
   methods: {
+    createPost() {
+      fb.postsCollection.add({
+          title: this.post.title,
+          createdOn: new Date(),
+          eventDate: this.post.eventDate,
+          content: this.post.content,
+          picture: this.post.picture,
+          userId: this.currentUser.uid,
+          organizationName: this.userProfile.organizationName,
+          likeCount: 0
+        })
+        .then(ref => {
+          this.post.title = '',
+          this.post.content = '',
+          this.post.picture = '',
+          this.post.eventDate = ''
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    toggleLike: function(postId, postLikes){
+        if(this.liked) {
+            this.unlikePost(postId, postLikes)
+        } else {
+            this.likePost(postId, postLikes)
+        }
+        this.liked = !this.liked;
+    },
     likePost(postId, postLikes) {
       let docId = `${this.currentUser.uid}_${postId}`
         fb.likesCollection.doc(docId).get().then(doc => {
@@ -151,6 +214,20 @@ export default {
              console.log(err)
           })
    },
+    unlikePost(postId, postLikes) {
+      let docId = `${this.currentUser.uid}_${postId}`
+        fb.likesCollection
+        .doc(docId)
+        .delete()
+        .then(() => {
+          fb.postsCollection.doc(postId).update({
+            likeCount: postLikes - 1
+          })
+        })
+        .catch(err => {
+             console.log(err)
+          });
+   },
     deletePost(id) {
       fb.postsCollection
         .doc(id)
@@ -159,6 +236,47 @@ export default {
           console.log(err);
         });
     },
+    toggleForm() {
+      // hides the appropriate forms at the button clicks
+      this.showEditForm = !this.showEditForm;
+    },
+    saveEditContact() {
+      // Calls toggle form at the end of all operations to hide the edit form
+      //This method is called by Save to update a contact with info
+      fb.postsCollection
+        .doc(this.editId)
+        .update({
+          title: this.post.title,
+          content: this.post.content,
+          eventDate: this.post.eventDate,
+          picture: this.post.picture
+        })
+        .then(ref => {
+          this.post.title = '',
+          this.post.content = '',
+          this.post.picture = '',
+          this.post.eventDate = '';
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      //hide the form
+      this.toggleForm();
+    },
+    //this method is triggered by the edit button
+    //toggles the form and populates the placeholders with contact information
+    editPost(post) {
+      //make the edit form appear
+      this.toggleForm();
+      //populate with contact info
+      console.log(this.post.title);
+      console.log("sanity check");
+        (this.post.title = post.title),
+        (this.post.content = post.content),
+        (this.post.eventDate = post.eventDate),
+        (this.post.picture = post.picture),
+        (this.editId = post.id);
+    }
   }
 };
 </script>
