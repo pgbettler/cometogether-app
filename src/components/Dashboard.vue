@@ -9,7 +9,6 @@
               <!-- Student View:
                   FirstName LastName
                   Student
-
                   Liked Organizations List
               -->
                 <div class="profile" v-if="userProfile.accountType == 'Student'">
@@ -23,7 +22,6 @@
                   OrganizationName
                   Organization
                   Organization Description
-
                   Create New Post
               -->
                 <div class="profile" v-if="userProfile.accountType == 'Organization'">
@@ -133,7 +131,6 @@
 import { mapState } from "vuex";
 import moment from 'moment'; //this is used for date formatting
 const fb = require("../../firebaseConfig.js");
-
 export default {
   data() {
     return {
