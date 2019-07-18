@@ -196,6 +196,7 @@ export default {
         }
         this.liked = !this.liked;
     },
+
     likePost(postId, postLikes) {
       let docId = `${this.currentUser.uid}_${postId}`
         fb.likesCollection.doc(docId).get().then(doc => {
