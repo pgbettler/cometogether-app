@@ -161,13 +161,11 @@ export default {
   },
   computed: {
    filteredPosts() {
-     console.log("hello")
       return this.posts.filter((post) => {
         return JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase());
       })
     },
    filteredLikedPosts() {
-     console.log("hello")
       return this.likedPosts.filter((post) => {
         return JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase());
       })

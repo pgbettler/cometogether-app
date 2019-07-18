@@ -9,35 +9,29 @@ fb.auth.onAuthStateChanged(user => {
   if (user) {
       store.commit('setCurrentUser', user)
       store.dispatch('fetchUserProfile')
-      let postsArray = []
 
     // realtime updates from our posts collection
        fb.postsCollection.orderBy('eventDate', 'desc').onSnapshot(querySnapshot => {
+        let postsArray = []
+        let userLikedPosts = []
 
          querySnapshot.forEach(doc => {
              let post = doc.data()
              post.id = doc.id
              postsArray.push(post)
+             fb.likesCollection.where("userId", "==", user.uid).onSnapshot(querySnapshot => {
+               querySnapshot.forEach(doc => {
+                 let likedpost = doc.data().postId
+                 if (likedpost == post.id) {
+                   userLikedPosts.push(post)
+                 }
+               })
+             })
          })
 
          store.commit('setPosts', postsArray)
+         store.commit('setLikedPosts', userLikedPosts)
         })
-    // realtime updates from our likes collection
-      fb.likesCollection.where("userId", "==", user.uid).onSnapshot(querySnapshot => {
-        let userLikedPosts = []
-
-        querySnapshot.forEach(doc => {
-          let likedpost = doc.data().postId
-          postsArray.forEach(post => {
-              let id = post.id
-              if (likedpost == id) {
-
-                userLikedPosts.push(post)
-              }
-            })
-          })
-        store.commit('setLikedPosts', userLikedPosts)
-      })
     }
 })
 
