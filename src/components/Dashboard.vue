@@ -14,11 +14,11 @@
               -->
                 <div class="profile" v-if="userProfile.accountType == 'Student'">
                     <img src="../assets/images/knightprofile.jpg" />
-                    <h5>{{ userProfile.firstName }} {{ userProfile.lastName }}</h5>
-                    <p>{{ userProfile.accountType }}</p>
-                    <h5>Followed Organizations:</h5>
+                    <h4>{{ userProfile.firstName }} {{ userProfile.lastName }}</h4>
+                    <p>{{ userProfile.accountType }}<br /><br /></p>
+                    <h4>Your Favorite Organizations:<br /><br /></h4>
                     <div v-for="org in followedOrgs" :key = "org.uid" class="liked-org">
-                        <p>{{ org.organizationName }}</p>
+                        <h5>{{ org.organizationName }}<br /><br /></h5>
                     </div>
                 </div>
               <!-- Organization View:
