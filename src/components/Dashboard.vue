@@ -41,6 +41,7 @@
                               use12-hour></datetime>
                             <textarea v-model.trim="post.content" placeholder = "Details" class="details"></textarea>
                             <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
+                            <gmap-autocomplete v-model.trim="post.location"></gmap-autocomplete>
                             <button @click="saveEditContact" class="button">Save</button>
                         </form>
                     </div>
@@ -178,13 +179,15 @@ export default {
           picture: this.post.picture,
           userId: this.currentUser.uid,
           organizationName: this.userProfile.organizationName,
-          likeCount: 0
+          likeCount: 0,
+          location: this.post.location
         })
         .then(ref => {
           this.post.title = '',
           this.post.content = '',
           this.post.picture = '',
-          this.post.eventDate = ''
+          this.post.eventDate = '',
+          this.post.location = ''
         })
         .catch(err => {
           console.log(err);
@@ -252,13 +255,15 @@ export default {
           title: this.post.title,
           content: this.post.content,
           eventDate: this.post.eventDate,
-          picture: this.post.picture
+          picture: this.post.picture,
+          location: this.post.location
         })
         .then(ref => {
           this.post.title = '',
           this.post.content = '',
           this.post.picture = '',
-          this.post.eventDate = '';
+          this.post.eventDate = '',
+          this.post.location = ''
         })
         .catch(err => {
           console.log(err);
@@ -278,7 +283,9 @@ export default {
         (this.post.content = post.content),
         (this.post.eventDate = post.eventDate),
         (this.post.picture = post.picture),
+        (this.post.location = post.location),
         (this.editId = post.id);
+        
     }
   }
 };
