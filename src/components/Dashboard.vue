@@ -68,13 +68,14 @@
                     </div>
                 </div>
             </div>
+
             <div v-if="userProfile.accountType == 'Organization'">
               <div class="col2">
                 <div class="container">
                   <input type="text" v-model="search" placeholder="Search...">
                   </div>
                 <div v-if= "posts.length">
-                    <div v-for = "post in filteredPosts" :key = "post.id" class="post">
+                    <div v-for = "post in filteredPosts" :key = "post.id">
                      <div v-if="post.userId == currentUser.uid" class="post">
                         <div class = "postcontent">
                           <h4>{{ post.title }}</h4>
@@ -108,7 +109,7 @@
                 <!-- Still not work !!!!! -->
                 <div class= "search"> </div>
                 <div v-if="likedPosts.length">
-                    <div v-for = "post in filteredPosts" :key = "post.id" class="post">
+                    <div v-for = "post in filteredLikedPosts" :key = "post.id" class="post">
                         <h4>{{ post.title }}</h4>
                         <h5>{{ post.organizationName }}</h5>
                         <span>{{ post.eventDate | moment }}</span>
@@ -160,6 +161,12 @@ export default {
   },
   computed: {
    filteredPosts() {
+     console.log("hello")
+      return this.posts.filter((post) => {
+        return JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase());
+      })
+    },
+   filteredLikedPosts() {
      console.log("hello")
       return this.likedPosts.filter((post) => {
         return JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase());
