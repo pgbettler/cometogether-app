@@ -112,7 +112,7 @@
 
                         <!-- Maybe add a unlike button instead of like button since it's already liked -->
                         <!-- Or when it clicks again it unlikes it -->
-                        <button @click="likePost(post.id, post.likeCount)" class="button">Likes {{ post.likeCount }}</button>
+                        <button @click="toggleLike(post.id, post.likeCount)" class="button">Likes {{ post.likeCount }}</button>
                     </div>
                 </div> 
                 <div v-else>
@@ -191,6 +191,15 @@ export default {
           console.log(err);
         });
     },
+    toggleLike: function(postId, postLikes){
+        if(this.liked) {
+            this.unlikePost(postId, postLikes)
+        } else {
+            this.likePost(postId, postLikes)
+        }
+        this.liked = !this.liked;
+    },
+
     likePost(postId, postLikes) {
       let docId = `${this.currentUser.uid}_${postId}`
         fb.likesCollection.doc(docId).get().then(doc => {
@@ -208,6 +217,20 @@ export default {
           }).catch(err => {
              console.log(err)
           })
+   },
+    unlikePost(postId, postLikes) {
+      let docId = `${this.currentUser.uid}_${postId}`
+        fb.likesCollection
+        .doc(docId)
+        .delete()
+        .then(() => {
+          fb.postsCollection.doc(postId).update({
+            likeCount: postLikes - 1
+          })
+        })
+        .catch(err => {
+             console.log(err)
+          });
    },
     deletePost(id) {
       fb.postsCollection
