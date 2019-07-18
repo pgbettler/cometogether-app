@@ -2,6 +2,10 @@
     <div id="explore">
         <section>
             <div class="col2">
+              <!-- test To See Google Maps -->
+            <div>
+              <GoogleMap></GoogleMap>
+            </div>
               <div v-if="posts.length">
                   <div v-for = "post in filteredPosts" :key = "post.id" class="post">
                       <h4>{{ post.title }}</h4>
@@ -25,8 +29,11 @@
 <script>
 import { mapState } from "vuex";
 const fb = require("../../firebaseConfig.js");
+import GoogleMap from './Map/GoogleMap'
+import MapFilter from './Map/MapFilter'
 
 export default {
+
   data() {
     return {
       post: {
@@ -36,6 +43,10 @@ export default {
       contactString: "",
       performingRequest: false,
     };
+  },
+  components: {
+    GoogleMap, 
+    MapFilter
   },
   computed: {
     filteredPosts() {
