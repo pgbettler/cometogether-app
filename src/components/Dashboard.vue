@@ -103,7 +103,7 @@
                      Then show that specific post --> 
                 <!-- Still not work !!!!! -->
                 <div class= "search"> </div>
-                <div v-if="posts.length">
+                <div v-if="likedPosts.length">
                     <div v-for = "post in filteredPosts" :key = "post.id" class="post">
                         <h4>{{ post.title }}</h4>
                         <h5>{{ post.organizationName }}</h5>
@@ -151,11 +151,12 @@ export default {
   },
   computed: {
    filteredPosts() {
-      return this.posts.filter((post) => {
+     console.log("hello")
+      return this.likedPosts.filter((post) => {
         return JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase());
       })
     },
-    ...mapState(['userProfile', 'currentUser', 'posts']),
+    ...mapState(['userProfile', 'currentUser', 'posts', 'likedPosts']),
     
   },
   filters: {
