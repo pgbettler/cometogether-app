@@ -86,6 +86,7 @@ export default {
       console.log("But First Heres the array: ");
       console.log(locations);
       console.log("Length of Loc: " + locations.length);
+      //FIX THIS CAN'T BE HARDCODED
       for(var i = 0; i < 8; i++) {
         console.log("Theoretically Printing Out Locations...");
         this.addPostMarker(posts.doc(locations[i]).location);

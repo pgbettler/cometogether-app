@@ -57,6 +57,7 @@
                               use12-hour></datetime>
                             <textarea v-model.trim="post.content" placeholder = "Details" class="details"></textarea>
                             <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
+                            <gmap-autocomplete @place_changed="setPlace" v-model.trim="post.location"></gmap-autocomplete>
                             <button @click="createPost" class="button">Post</button>
                         </form>
                     </div>
@@ -139,7 +140,8 @@ export default {
         content: '',
         eventDate: '',
         picture: '',
-        likeCount: ''
+        likeCount: '',
+        location: ''
       },
       showEditForm: false,
       editId: "",
