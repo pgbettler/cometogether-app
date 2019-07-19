@@ -15,12 +15,10 @@
                   Liked Organizations List
               -->
                 <div class="profile" v-if="userProfile.accountType == 'Student'">
-                    <img src="../assets/images/knightprofile.jpg" />
-                    <h4>{{ userProfile.firstName }} {{ userProfile.lastName }}</h4>
-                    <p>{{ userProfile.accountType }}<br /><br /></p>
-                    <h4>Your Favorite Organizations:<br /><br /></h4>
-                    <div v-for="org in followedOrgs" :key = "org.uid" class="liked-org">
-                        <h5>{{ org.organizationName }}<br /><br /></h5>
+                    <h5>{{ userProfile.firstName }} {{ userProfile.lastName }}</h5>
+                    <p>{{ userProfile.accountType }}</p>
+                    <div class="liked-org">
+                        <p>This section will show liked organizations</p>
                     </div>
                 </div>
               <!-- Organization View:
@@ -30,7 +28,6 @@
                   Create New Post
               -->
                 <div class="profile" v-if="userProfile.accountType == 'Organization'">
-                    <img src="../assets/images/knightprofile.jpg" />
                     <h3>{{ userProfile.organizationName }}</h3>
                     <p><i>{{ userProfile.accountType }}</i></p>
                     <h5>{{ userProfile.organizationDetails | trimLength }}</h5>
@@ -50,7 +47,6 @@
                              <frame><img :src='post.picture' height="100"></frame>
                              </slot>
                             <button raised type="button" class="button" @click='toggleUploadForm(true)'>Upload a Photo</button>
-                            <gmap-autocomplete v-model.trim="post.location"></gmap-autocomplete>
                             <button @click="saveEditContact" class="button">Save</button>
                         </form>
                     </div>
@@ -70,20 +66,19 @@
                              <frame><img :src='post.picture' height="100"></frame>
                              </slot>
                             <button raised type="button" class="button" @click='toggleUploadForm(true)'>Upload a Photo</button>
-                            <gmap-autocomplete @place_changed="setPlace" v-model.trim="post.location"></gmap-autocomplete>
+                            
                             <button @click="createPost" class="button">Post</button>
                         </form>
                     </div>
                 </div>
             </div>
-
             <div v-if="userProfile.accountType == 'Organization'">
               <div class="col2">
                 <div class="container">
                   <input type="text" v-model="search" placeholder="Search...">
                   </div>
                 <div v-if= "posts.length">
-                    <div v-for = "post in filteredPosts" :key = "post.id">
+                    <div v-for = "post in filteredPosts" :key = "post.id" class="post">
                      <div v-if="post.userId == currentUser.uid" class="post">
                         <div class = "postcontent">
                          <frame><img :src='post.picture' height="100"></frame>
@@ -117,9 +112,9 @@
                      Then show that specific post --> 
                 <!-- Still not work !!!!! -->
                 <div class= "search"> </div>
-                <div v-if="likedPosts.length">
-                    <div v-for = "post in filteredLikedPosts" :key = "post.id" class="post">
-                        <h4>{{ post.title }}</h4>
+                <div v-if="posts.length">
+                    <div v-for = "post in filteredPosts" :key = "post.id" class="post">
+                        <h4> {{ post.title }}</h4>
                         <h5>{{ post.organizationName }}</h5>
                         <span>{{ post.eventDate | moment }}</span>
                         <p>{{ post.content | trimLength }}</p>
@@ -127,7 +122,6 @@
                         <!-- Maybe add a unlike button instead of like button since it's already liked -->
                         <!-- Or when it clicks again it unlikes it -->
                         <button @click="toggleLike(post.id, post.likeCount)" class="button">Likes {{ post.likeCount }}</button>
-                        <button @click="followOrg(post.userId)" class="button">Follow {{ post.organizationName }}</button>
                     </div>
                 </div> 
                 <div v-else>
@@ -162,11 +156,7 @@ export default {
         content: '',
         eventDate: '',
         picture: '',
-        likeCount: '',
-        location: ''
-      },
-      org: {
-        organizationName: ''
+        likeCount: ''
       },
       showUploadForm: '',
       showEditForm: false,
@@ -181,12 +171,7 @@ export default {
         return JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase());
       })
     },
-   filteredLikedPosts() {
-      return this.likedPosts.filter((post) => {
-        return JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase());
-      })
-    },
-    ...mapState(['userProfile', 'currentUser', 'posts', 'likedPosts', 'followedOrgs']),
+    ...mapState(['userProfile', 'currentUser', 'posts']),
     
   },
   filters: {
@@ -210,15 +195,13 @@ export default {
           picture: this.post.picture,
           userId: this.currentUser.uid,
           organizationName: this.userProfile.organizationName,
-          likeCount: 0,
-          location: this.post.location
+          likeCount: 0
         })
         .then(ref => {
           this.post.title = '',
           this.post.content = '',
           this.post.picture = '',
-          this.post.eventDate = '',
-          this.post.location = ''
+          this.post.eventDate = ''
         })
         .catch(err => {
           console.log(err);
@@ -233,25 +216,6 @@ export default {
         this.liked = !this.liked;
     },
 
-    followOrg(orgId) {
-      let docId = `${this.currentUser.uid}_${orgId}`
-      fb.followCollection.doc(docId).get().then(doc => {
-        if (doc.exists) { return }
-        fb.followCollection.doc(docId).set({
-          orgId: orgId,
-          userId: this.currentUser.uid
-        }).then(() => {
-          if (fb.organizationsCollection.doc(orgId).get(followCount) > 0){
-            currentFollowCount = fb.organizationsCollection.doc(orgId).get(followCount)
-          }
-          else {currentFollowCount = 0}
-          fb.organizationsCollection.doc(orgId).update({
-            followCount: currentFollowCount + 1
-          })
-        })
-      })
-
-    },
     likePost(postId, postLikes) {
       let docId = `${this.currentUser.uid}_${postId}`
         fb.likesCollection.doc(docId).get().then(doc => {
@@ -323,15 +287,13 @@ export default {
           title: this.post.title,
           content: this.post.content,
           eventDate: this.post.eventDate,
-          picture: this.post.picture,
-          location: this.post.location
+          picture: this.post.picture
         })
         .then(ref => {
           this.post.title = '',
           this.post.content = '',
           this.post.picture = '',
-          this.post.eventDate = '',
-          this.post.location = ''
+          this.post.eventDate = '';
         })
         .catch(err => {
           console.log(err);
@@ -351,9 +313,7 @@ export default {
         (this.post.content = post.content),
         (this.post.eventDate = post.eventDate),
         (this.post.picture = post.picture),
-        (this.post.location = post.location),
         (this.editId = post.id);
-        
     }
   }
 };

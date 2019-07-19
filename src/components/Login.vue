@@ -137,8 +137,7 @@ const fb = require('../../firebaseConfig.js')
                         lastName: this.signupForm.lastName,
                         accountType: this.signupForm.accountType,
                         organizationName: this.signupForm.organizationName,
-                        organizationDetails: this.signupForm.organizationDetails,
-                        followCount: 0
+                        organizationDetails: this.signupForm.organizationDetails
                     }).then(() => {
                         this.$store.dispatch('fetchUserProfile')
                         this.performingRequest = false
