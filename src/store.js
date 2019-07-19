@@ -13,15 +13,39 @@ fb.auth.onAuthStateChanged(user => {
     // realtime updates from our posts collection
        fb.postsCollection.orderBy('eventDate', 'desc').onSnapshot(querySnapshot => {
         let postsArray = []
+        let userLikedPosts = []
 
          querySnapshot.forEach(doc => {
              let post = doc.data()
              post.id = doc.id
              postsArray.push(post)
+             fb.likesCollection.where("userId", "==", user.uid).onSnapshot(querySnapshot => {
+               querySnapshot.forEach(doc => {
+                 let likedpost = doc.data().postId
+                 if (likedpost == post.id) {
+                   userLikedPosts.push(post)
+                 }
+               })
+             })
          })
 
          store.commit('setPosts', postsArray)
+         store.commit('setLikedPosts', userLikedPosts)
         })
+      
+      fb.followCollection.where("userId", "==", user.uid).onSnapshot(querySnapshot => {
+        let followedArray = []
+
+        querySnapshot.forEach(doc => {
+          let orgId = doc.data().orgId
+          fb.usersCollection.doc(orgId).get().then(res => {
+            followedArray.push(res.data())
+          })
+        })
+
+        console.log(followedArray)
+        store.commit('setFollowedOrgs', followedArray)
+      })
     }
 })
 
@@ -29,7 +53,9 @@ export const store = new Vuex.Store({
   state: {
     currentUser: null,
     userProfile: {},
-    posts: []
+    posts: [],
+    likedPosts: [],
+    followedOrgs: []
 
   },
   actions: {
@@ -55,6 +81,12 @@ export const store = new Vuex.Store({
     },
     setPosts(state, val) {
       state.posts = val
+    },
+    setLikedPosts(state, val) {
+      state.likedPosts = val
+    },
+    setFollowedOrgs(state, val) {
+      state.followedOrgs = val
     }
   }
 })
