@@ -355,7 +355,7 @@ export default {
         (this.post.title = post.title),
         (this.post.content = post.content),
         (this.post.eventDate = post.eventDate),
-        (this.post.picture = post.picture),
+        (this.post.picture = post.pictureUrl),
         (this.post.locationName = post.locationName),
         (this.editId = post.id);
     }
