@@ -123,7 +123,9 @@
                 <div class= "search"> </div>
                 <div v-if="posts.length">
                     <div v-for = "post in filteredPosts" :key = "post.id" class="post">
+                        <div v-if="post.pictureURL">
                         <frame><img :src='post.pictureUrl' height="100" class="post-picture" ></frame>
+                        </div>
                         <h4> {{ post.title }}</h4>
                         <h5>{{ post.organizationName }}</h5>
                         <span>{{ post.eventDate | moment }}</span>
