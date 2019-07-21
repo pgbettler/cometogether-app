@@ -218,7 +218,7 @@ export default {
           createdOn: new Date(),
           eventDate: this.post.eventDate,
           content: this.post.content,
-          picture: this.post.picture,
+          pictureUrl: this.post.picture,
           userId: this.currentUser.uid,
           organizationName: this.userProfile.organizationName,
           likeCount: 0,
@@ -317,7 +317,7 @@ export default {
           title: this.post.title,
           content: this.post.content,
           eventDate: this.post.eventDate,
-          picture: this.post.picture,
+          pictureUrl: this.post.picture,
           locationName: this.post.locationName
         })
         .then(ref => {
