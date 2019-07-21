@@ -25,7 +25,7 @@ Write Out: if a pin is clicked, can we send this back to the parent component to
     <br>
     <gmap-map
       :center="center"
-      :zoom="12"
+      :zoom="15"
       style="width:100%;  height: 400px;"
     >
       <gmap-marker
