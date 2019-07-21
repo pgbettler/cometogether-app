@@ -44,6 +44,8 @@
                               :minute-step="15"
                               use12-hour></datetime>
                             <textarea v-model.trim="post.content" placeholder = "Details" class="details"></textarea>
+                            <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
+                            <gmap-autocomplete @place_changed=setPlace></gmap-autocomplete>
                             <slot>
                              <frame><img :src='post.picture' height="100"></frame>
                              </slot>
@@ -64,6 +66,8 @@
                               :minute-step="15"
                               use12-hour></datetime>
                             <textarea v-model.trim="post.content" placeholder = "Details" class="details"></textarea>
+                            <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
+                            <gmap-autocomplete  @place_changed=setPlace></gmap-autocomplete>
                             <slot>
                              <frame><img :src='post.picture' height="100"></frame>
                              </slot>
@@ -88,6 +92,8 @@
                           <h4>{{ post.title }}</h4>
                           <h5>{{ post.organizationName }}</h5>
                           <span>{{ post.eventDate | moment }}</span>
+                          <!-- used for testing comment out later -->
+                          <span>{{ post.locationName }}</span>
                           <p>{{ post.content | trimLength }}</p>
                           <!-- Maybe add a unlike button instead of like button since it's already liked -->
                           <button class="button">Likes {{ post.likeCount }}</button> <!-- They can only view likes -->
@@ -160,7 +166,10 @@ export default {
         content: '',
         eventDate: '',
         picture: '',
-        likeCount: ''
+        likeCount: '',
+        locationName: '',
+        lat: '',
+        lng: ''
       },
       showUploadForm: '',
       showEditForm: false,
@@ -176,7 +185,12 @@ export default {
         return JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase());
       })
     },
-    ...mapState(['userProfile', 'currentUser', 'posts']),
+   filteredLikedPosts() {
+      return this.likedPosts.filter((post) => {
+        return JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase());
+      })
+    },
+    ...mapState(['userProfile', 'currentUser', 'posts', 'likedPosts']),
     
   },
   filters: {
@@ -191,6 +205,18 @@ export default {
       }
   },
   methods: {
+    setPlace(place) {
+    
+      console.log("Old Location: " + this.post.locationName);
+      console.log("Place equals: " + JSON.stringify(place.name, undefined, 2));
+      this.post.locationName = place.name;
+      this.post.lat = place.geometry.location.lat();
+      this.post.lng = place.geometry.location.lng();
+      console.log("Lat: " + place.geometry.location.lat());
+      console.log("New Location: " + this.post.locationName);
+      console.log("Event Latitude: " + this.post.lat);
+      console.log("Event Longitude: " + this.post.lng);
+    },
     createPost() {
       fb.postsCollection.add({
           title: this.post.title,
@@ -200,13 +226,17 @@ export default {
           picture: this.post.picture,
           userId: this.currentUser.uid,
           organizationName: this.userProfile.organizationName,
-          likeCount: 0
+          likeCount: 0,
+          location: this.post.locationName,
+          lat: this.post.lat,
+          lng: this.post.lng
         })
         .then(ref => {
           this.post.title = '',
           this.post.content = '',
           this.post.picture = '',
-          this.post.eventDate = ''
+          this.post.eventDate = '',
+          this.post.locationName = ''
         })
         .catch(err => {
           console.log(err);
@@ -297,14 +327,16 @@ export default {
         .update({
           title: this.post.title,
           content: this.post.content,
-          eventDate: this.post.eventDate - 14,
-          picture: this.post.picture
+          eventDate: this.post.eventDate,
+          picture: this.post.picture,
+          locationName: this.post.locationName
         })
         .then(ref => {
           this.post.title = '',
           this.post.content = '',
           this.post.picture = '',
-          this.post.eventDate = '';
+          this.post.eventDate = '',
+          this.post.locationName = ''
         })
         .catch(err => {
           console.log(err);
@@ -324,6 +356,7 @@ export default {
         (this.post.content = post.content),
         (this.post.eventDate = post.eventDate),
         (this.post.picture = post.picture),
+        (this.post.locationName = post.locationName),
         (this.editId = post.id);
     }
   }

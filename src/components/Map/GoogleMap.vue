@@ -42,6 +42,7 @@ Write Out: if a pin is clicked, can we send this back to the parent component to
 import { mapState } from "vuex";
 import { likesCollection } from '../../../firebaseConfig';
 import MapFilter from './MapFilter';
+import { setTimeout } from 'timers';
 const fb = require("../../../firebaseConfig.js");
 
 //addEvents(this.currentUser.uid);
@@ -55,7 +56,7 @@ export default {
       markers: [],
       places: [],
       currentPlace: null,
-      filterKey: ""
+      filterKey: "",
     };
   },  
   components: {
@@ -75,27 +76,64 @@ export default {
     setPlace(place) {
       this.currentPlace = place;
     }, 
-    setPlaces(callback) {
+    setPlaces() {
       console.log("WE'VE ENTERED SET PLACES: STAGE 1");
       let posts = fb.postsCollection;
-      let locations = callback();
-      let locLen = locations.length;
-      // create Markers for each PostID in array
-      // postId.location 
-      console.log("About to Loop on Locations...");
-      console.log("But First Heres the array: ");
-      console.log(locations);
-      console.log("Length of Loc: " + locations.length);
-      for(var i = 0; i < 8; i++) {
-        console.log("Theoretically Printing Out Locations...");
-        this.addPostMarker(posts.doc(locations[i]).location);
-      }
+
+      let locations = this.filterEvents();
+      setTimeout( () => {
+        // create Markers for each PostID in array
+        // postId.location 
+
+        for(var i = 0; i < locations.length; i++) {
+
+          console.log("Theoretically Printing Out Locations...");
+          console.log(locations[i]);
+          let postdoc = posts.doc(locations[i]);
+          this.setLocationInfo(postdoc);
+        }
+      },2000);
+    },
+    setLocationInfo(postdoc) {
+      var vm = this;
+      let p = new Promise((resolve, reject) => {
+        postdoc.get().then(function(doc){
+          if (doc.exists) {
+
+            let loc = doc.data().location;
+            let lat = doc.data().lat;
+            let lng = doc.data().lng;
+
+            //Make the marker
+            console.log("Loc: " + loc + "Lat: " + lat + "Lng: " + lng);
+            if (loc) {
+              const marker = {
+                lat: lat,
+                lng: lng
+              };
+              vm.markers.push({ position: marker });
+              vm.places.push(loc);
+              vm.center = marker;
+              vm.currentPlace = null;
+            }
+            console.log("Markers: " + vm.markers.length)
+
+          } else 
+            console.log("WHY THE FUCK DOESNT THIS EXIST");
+        });
+        resolve('Success!'); 
+      });
+      p.then((message) => {
+        console.log(message) 
+        //this.addPostMarker();
+      });
+
     },
     onFilterClick(value){
       this.filterKey = value;
       console.log("HEY ITS WORKING");
       // call setPlaces to load markers onto map
-      this.setPlaces(this.filterEvents);
+      this.setPlaces();
     },
     addMarker() {
       if (this.currentPlace) {
@@ -109,18 +147,20 @@ export default {
         this.currentPlace = null;
       }
     },
-    
-    addPostMarker(loc) {
-      if (loc) {
+    addPostMarker() {
+      var vm = this;
+      console.log("Loc: " + vm.loc + "Lat: " + vm.lat + "Lng: " + vm.lng);
+      if (this.loc) {
         const marker = {
-          lat: loc.geometry.location.lat(),
-          lng: loc.geometry.location.lng()
+          lat: this.lat,
+          lng: this.lng
         };
         this.markers.push({ position: marker });
-        this.places.push(loc);
+        this.places.push(this.loc);
         this.center = marker;
         this.currentPlace = null;
       }
+      console.log("Markers: " + this.markers.length)
     },
 
     filterEvents() {
@@ -176,7 +216,7 @@ export default {
             //load postId's into location array
             locations.push(doc.data().postId);
             // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
+            //console.log(doc.id, " => ", doc.data());
           });
         });
         //console.log("Locations: "+ locations);
@@ -215,7 +255,6 @@ export default {
         return locations;
         */
       }
-
     },
     geolocate: function() 
     {
