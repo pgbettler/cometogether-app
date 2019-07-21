@@ -6,30 +6,32 @@
 
           <div class="modal-header">
             <slot name="header">
-              Upload an Image
+              <strong>Upload an Image</strong>
             </slot>
           </div>
 
           <div class="modal-body">
             <slot name="body">
-              <button raised id="UploadBTN" @click="chooseOnClick">Choose Image</button>
-              <input type="file"
-               style="display: none" 
-               accept="image/*" 
-               ref="fileInput"
-               @click="onPickedImage">
-            </slot>
+              <button raised @click="chooseOnClick">Choose Image</button>
+              <input type="file" 
+              @change ="onPickedImage"
+              style="display: none"
+              accept="image/*"
+              ref="fileInput">
+              <button raised id="UploadBTN" @click="uploadSendMsg">Upload</button>
+             </slot>
           </div>
 
           <div class="modal-footer">
             
-              <!--<img: src="imageUrl" height="150" > -->
+             <!-- <slot><img: src="this.image"> </slot> -->
              
               <slot name="footer">
               <button class="button" v-on:click="hideUpload">
                 OK
               </button>
               </slot>
+              
 
           </div>
         </div>
@@ -48,13 +50,16 @@ data() {
   return {
   imageUrl: '',
   showUploadForm: '',
-  image : null
+  image : ''
           }
       },
 
 methods: {
     hideUpload() {
       this.$emit('childCall', false)
+    },
+    uploadSendMsg() {
+    this.$emit('uploadClick', true)
     },
     chooseOnClick() {
         this.$refs.fileInput.click()
@@ -65,14 +70,19 @@ methods: {
         if (filename.lastIndexOf('.') <= 0) {
             return alert('Please upload a valid file.')
         }
-        const fileReader = new fileReader()
+        const fileReader = new FileReader()
         fileReader.addEventListener('load', () => {
             this.imageUrl = fileReader.result
         })
         fileReader.readAsDataURL(files[0])
-        this.image = files[0]
-    }
-},
+        this.image = files[0] 
+        console.log(this.imageUrl)
+        console.log(this.image)
+        this.$emit('theImage', this.image)
+        
+        
+        }
+    },
 }
 
 </script>

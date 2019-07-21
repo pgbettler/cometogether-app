@@ -1,6 +1,8 @@
 <template>
     <div id="dashboard">
-      <UploadImage v-if='showUploadForm' v-on:childCall='toggleUploadForm(false)' class="block"></UploadImage>
+      <div id="uploadImageModal">
+      <UploadImage v-if='showUploadForm' v-on:childCall='toggleUploadForm(false)' v-on:theImage='loadImage' v-on:uploadClick="uploadImage" class="block"></UploadImage>
+      </div>
         <section>
             <div class="col1">
               <!-- Depending on User Type,
@@ -13,7 +15,6 @@
                   Liked Organizations List
               -->
                 <div class="profile" v-if="userProfile.accountType == 'Student'">
-                    <img src="../assets/images/knightprofile.jpg" />
                     <h5>{{ userProfile.firstName }} {{ userProfile.lastName }}</h5>
                     <p>{{ userProfile.accountType }}</p>
                     <div class="liked-org">
@@ -27,12 +28,11 @@
                   Create New Post
               -->
                 <div class="profile" v-if="userProfile.accountType == 'Organization'">
-                    <img src="../assets/images/knightprofile.jpg" />
                     <h3>{{ userProfile.organizationName }}</h3>
                     <p><i>{{ userProfile.accountType }}</i></p>
                     <h5>{{ userProfile.organizationDetails | trimLength }}</h5>
                     <br>
-                    <div class="edit-post" v-if="showEditForm">
+                    <div class="create-post" v-if="showEditForm">
                      <p>Edit Post</p>
                         <form>
                             <textarea v-model.trim="post.title" placeholder="Event Name"></textarea><p>required</p>
@@ -45,6 +45,10 @@
                             <textarea v-model.trim="post.content" placeholder = "Details" class="details"></textarea>
                             <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
                             <gmap-autocomplete @place_changed=setPlace></gmap-autocomplete>
+                            <slot>
+                             <frame><img :src='post.picture' height="100"></frame>
+                             </slot>
+                            <button raised type="button" class="button" @click='toggleUploadForm(true)'>Upload a Photo</button>
                             <button @click="saveEditContact" class="button">Save</button>
                         </form>
                     </div>
@@ -62,21 +66,26 @@
                             <textarea v-model.trim="post.content" placeholder = "Details" class="details"></textarea>
                             <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
                             <gmap-autocomplete  @place_changed=setPlace></gmap-autocomplete>
+                            <slot>
+                             <frame><img :src='post.picture' height="100"></frame>
+                             </slot>
+                            <button raised type="button" class="button" @click='toggleUploadForm(true)'>Upload a Photo</button>
+                            
                             <button @click="createPost" class="button">Post</button>
                         </form>
                     </div>
                 </div>
             </div>
-
             <div v-if="userProfile.accountType == 'Organization'">
               <div class="col2">
                 <div class="container">
                   <input type="text" v-model="search" placeholder="Search...">
                   </div>
                 <div v-if= "posts.length">
-                    <div v-for = "post in filteredPosts" :key = "post.id">
+                    <div v-for = "post in filteredPosts" :key = "post.id" class="post">
                      <div v-if="post.userId == currentUser.uid" class="post">
                         <div class = "postcontent">
+                         <frame><img :src='post.picture' height="100"></frame>
                           <h4>{{ post.title }}</h4>
                           <h5>{{ post.organizationName }}</h5>
                           <span>{{ post.eventDate | moment }}</span>
@@ -109,9 +118,9 @@
                      Then show that specific post --> 
                 <!-- Still not work !!!!! -->
                 <div class= "search"> </div>
-                <div v-if="likedPosts.length">
-                    <div v-for = "post in filteredLikedPosts" :key = "post.id" class="post">
-                        <h4>{{ post.title }}</h4>
+                <div v-if="posts.length">
+                    <div v-for = "post in filteredPosts" :key = "post.id" class="post">
+                        <h4> {{ post.title }}</h4>
                         <h5>{{ post.organizationName }}</h5>
                         <span>{{ post.eventDate | moment }}</span>
                         <p>{{ post.content | trimLength }}</p>
@@ -140,6 +149,7 @@
 import { mapState } from "vuex";
 import moment from 'moment'; //this is used for date formatting
 import UploadImage from './UploadImage';
+import firebase from 'firebase'
 const fb = require("../../firebaseConfig.js");
 export default {
   components: {
@@ -160,7 +170,8 @@ export default {
       showUploadForm: '',
       showEditForm: false,
       editId: "",
-      search: ""
+      search: "",
+      tempImage: ""
     };
   },
   computed: {
@@ -275,10 +286,23 @@ export default {
           console.log(err);
         });
     },
-    toggleUploadForm(boolean) {
-      this.showUploadForm= boolean;
-      console.log('close received');
-      console.log(boolean);
+    toggleUploadForm(boolValue) {
+      this.showUploadForm= boolValue;
+      console.log('childCall received');
+    },
+    loadImage(value) {
+    console.log('inside of loadImage')
+    this.tempImage = value
+    },
+    uploadImage() {
+    const storageRef = firebase.storage().ref(`/images/${this.tempImage.name}`);
+    const task = storageRef.put(this.tempImage);
+    task.snapshot.ref.getDownloadURL().then((url) => {
+      this.post.picture = url;
+      console.log("insied of uploadImage woo")
+      console.log(this.post.picture)
+      return url;
+    })
     },
     toggleForm() {
       // hides the appropriate forms at the button clicks
@@ -323,7 +347,6 @@ export default {
         (this.post.picture = post.picture),
         (this.post.locationName = post.locationName),
         (this.editId = post.id);
-        
     }
   }
 };
