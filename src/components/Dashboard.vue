@@ -74,7 +74,7 @@
 
                             <button raised type="button" class="button" @click='toggleUploadForm(true)'>Upload a Photo</button>
                             
-                            <button @click="createPost" class="button">Post</button>
+                            <button @click="createPost" type="button" class="button">Post</button>
                         </form>
                     </div>
                 </div>
