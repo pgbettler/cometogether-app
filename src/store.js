@@ -13,14 +13,26 @@ fb.auth.onAuthStateChanged(user => {
     // realtime updates from our posts collection
        fb.postsCollection.orderBy('eventDate', 'desc').onSnapshot(querySnapshot => {
         let postsArray = []
+        let likesArray= []
 
          querySnapshot.forEach(doc => {
              let post = doc.data()
              post.id = doc.id
              postsArray.push(post)
-         })
 
+             fb.likesCollection.where("postId", "==", post.id).onSnapshot(querySnapshot => {
+               querySnapshot.forEach(doc => {
+                 let likedata = doc.data()
+                 likedata.user = doc.userId
+                 if (likedata.userId == user.uid) {
+                   likesArray.push(post)
+                 }
+               })
+             })
+         })
+        
          store.commit('setPosts', postsArray)
+         store.commit('setLikedPosts', likesArray)
         })
     }
 })
@@ -29,7 +41,8 @@ export const store = new Vuex.Store({
   state: {
     currentUser: null,
     userProfile: {},
-    posts: []
+    posts: [],
+    likedPosts: []
 
   },
   actions: {
@@ -55,6 +68,9 @@ export const store = new Vuex.Store({
     },
     setPosts(state, val) {
       state.posts = val
+    },
+    setLikedPosts(state, val) {
+      state.likedPosts = val
     }
   }
 })

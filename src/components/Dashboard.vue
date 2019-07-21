@@ -119,7 +119,7 @@
                 <!-- Still not work !!!!! -->
                 <div class= "search"> </div>
                 <div v-if="posts.length">
-                    <div v-for = "post in filteredPosts" :key = "post.id" class="post">
+                    <div v-for = "post in filteredLikedPosts" :key = "post.id" class="post">
                         <h4> {{ post.title }}</h4>
                         <h5>{{ post.organizationName }}</h5>
                         <span>{{ post.eventDate | moment }}</span>
@@ -299,7 +299,7 @@ export default {
     const task = storageRef.put(this.tempImage);
     task.snapshot.ref.getDownloadURL().then((url) => {
       this.post.picture = url;
-      console.log("insied of uploadImage woo")
+      console.log("inside of uploadImage woo")
       console.log(this.post.picture)
       return url;
     })
