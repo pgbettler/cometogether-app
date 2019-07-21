@@ -2,6 +2,7 @@
     <div id="dashboard">
       <div id="uploadImageModal">
       <UploadImage v-if='showUploadForm' v-on:childCall='toggleUploadForm(false)' v-on:theImage='loadImage' v-on:uploadClick="uploadImage" class="block"></UploadImage>
+      
       </div>
         <section>
             <div class="col1">
@@ -50,6 +51,7 @@
                              </slot>
                             <button raised type="button" class="button" @click='toggleUploadForm(true)'>Upload a Photo</button>
                             <button @click="saveEditContact" class="button">Save</button>
+                           
                         </form>
                     </div>
                     <div v-if="!showEditForm" class="create-post">
@@ -69,9 +71,10 @@
                             <slot>
                              <frame><img :src='post.picture' height="100"></frame>
                              </slot>
+
                             <button raised type="button" class="button" @click='toggleUploadForm(true)'>Upload a Photo</button>
                             
-                            <button @click="createPost" class="button">Post</button>
+                            <button @click="createPost" type="button" class="button">Post</button>
                         </form>
                     </div>
                 </div>
@@ -81,11 +84,11 @@
                 <div class="container">
                   <input type="text" v-model="search" placeholder="Search...">
                   </div>
-                <div v-if= "posts.length">
+                  <div v-if="posts.length">
                     <div v-for = "post in filteredPosts" :key = "post.id" class="post">
                      <div v-if="post.userId == currentUser.uid" class="post">
                         <div class = "postcontent">
-                         <frame><img :src='post.picture' height="100"></frame>
+                         <frame><img :src='post.picture' height="100" class="img"></frame>
                           <h4>{{ post.title }}</h4>
                           <h5>{{ post.organizationName }}</h5>
                           <span>{{ post.eventDate | moment }}</span>
@@ -119,7 +122,8 @@
                 <!-- Still not work !!!!! -->
                 <div class= "search"> </div>
                 <div v-if="posts.length">
-                    <div v-for = "post in filteredLikedPosts" :key = "post.id" class="post">
+                    <div v-for = "post in filteredPosts" :key = "post.id" class="post">
+                        <frame><img :src='post.picture' height="100" class="post-picture" ></frame>
                         <h4> {{ post.title }}</h4>
                         <h5>{{ post.organizationName }}</h5>
                         <span>{{ post.eventDate | moment }}</span>
@@ -171,7 +175,8 @@ export default {
       showEditForm: false,
       editId: "",
       search: "",
-      tempImage: ""
+      tempImage: "",
+      uploadValue: 0
     };
   },
   computed: {
@@ -218,7 +223,7 @@ export default {
           createdOn: new Date(),
           eventDate: this.post.eventDate,
           content: this.post.content,
-          picture: this.post.picture,
+          pictureUrl: this.post.picture,
           userId: this.currentUser.uid,
           organizationName: this.userProfile.organizationName,
           likeCount: 0,
@@ -297,12 +302,18 @@ export default {
     uploadImage() {
     const storageRef = firebase.storage().ref(`/images/${this.tempImage.name}`);
     const task = storageRef.put(this.tempImage);
-    task.snapshot.ref.getDownloadURL().then((url) => {
-      this.post.picture = url;
-      console.log("inside of uploadImage woo")
-      console.log(this.post.picture)
-      return url;
-    })
+    task.on('state_changed', snapshot => {
+      let percentage = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
+      this.uploadValue = percentage;
+    }, error =>{console.log(error.message)},
+      ()=>{this.uploadValue=100;
+        task.snapshot.ref.getDownloadURL().then((url) => {
+        this.post.picture = url;
+        console.log("insied of uploadImage woo")
+        console.log(this.post.picture)
+        console.log(this.uploadValue)
+        });
+      });
     },
     toggleForm() {
       // hides the appropriate forms at the button clicks
@@ -317,7 +328,7 @@ export default {
           title: this.post.title,
           content: this.post.content,
           eventDate: this.post.eventDate,
-          picture: this.post.picture,
+          pictureUrl: this.post.picture,
           locationName: this.post.locationName
         })
         .then(ref => {
