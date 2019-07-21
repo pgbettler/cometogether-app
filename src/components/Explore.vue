@@ -8,6 +8,7 @@
             </div>
               <div v-if="posts.length">
                   <div v-for = "post in filteredPosts" :key = "post.id" class="post">
+                      <frame><img :src='post.picture' height="100" class="post-picture"></frame>
                       <h4>{{ post.title }}</h4>
                       <h5>{{ post.organizationName }}</h5>
                       <span>{{ post.eventDate | moment }}</span>
@@ -31,6 +32,9 @@ import { mapState } from "vuex";
 const fb = require("../../firebaseConfig.js");
 import GoogleMap from './Map/GoogleMap'
 import MapFilter from './Map/MapFilter'
+import moment from 'moment'; //this is used for date formatting
+
+
 
 export default {
 
@@ -46,15 +50,26 @@ export default {
   },
   components: {
     GoogleMap, 
-    MapFilter
+    MapFilter,
   },
   computed: {
     filteredPosts() {
       return this.posts.filter((post) => {
-        return JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase());
+        return (JSON.stringify(post).toLowerCase().includes(this.search.toLowerCase()))
       })
     },
     ...mapState(['userProfile', 'currentUser', 'posts']),
+  },
+  filters: {
+    moment: function(date) {
+        return moment(date).format('MMMM Do YYYY, h:mm a');
+      },
+      trimLength: function(val) {
+          if (val.length < 200) {
+              return val
+          }
+          return `${val.substring(0, 200)}...`
+      }
   },
   methods: {
       likePost(postId, postLikes) {
