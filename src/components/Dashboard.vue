@@ -44,7 +44,6 @@
                               :minute-step="15"
                               use12-hour></datetime>
                             <textarea v-model.trim="post.content" placeholder = "Details" class="details"></textarea>
-                            <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
                             <gmap-autocomplete @place_changed=setPlace></gmap-autocomplete>
                             <slot>
                              <frame><img :src='post.picture' height="100"></frame>
@@ -66,7 +65,6 @@
                               :minute-step="15"
                               use12-hour></datetime>
                             <textarea v-model.trim="post.content" placeholder = "Details" class="details"></textarea>
-                            <textarea v-model.trim="post.picture" placeholder = "Add Photo"></textarea>
                             <gmap-autocomplete  @place_changed=setPlace></gmap-autocomplete>
                             <slot>
                              <frame><img :src='post.picture' height="100"></frame>
