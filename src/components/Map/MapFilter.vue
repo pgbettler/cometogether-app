@@ -16,7 +16,6 @@ Write out: an array of posts or new filter selections
         <option disabled value="">Please select one</option>
         <option value="liked">Liked Posts</option>
         <option value="all">All Posts</option>
-        <option value="follows">Followed Organizations</option>
     </select>
      <span>Selected: {{ selected }}</span>
     <button v-on:click=select()>Filter!</button>
