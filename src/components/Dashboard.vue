@@ -79,7 +79,7 @@
                   <input type="text" v-model="search" placeholder="Search...">
                   </div>
                   <div v-if="posts.length">
-                    <div v-for = "post in filteredPosts" :key = "post.id" class="post">
+                    <div v-for = "post in filteredPosts" :key = "post.id">
                      <div v-if="post.userId == currentUser.uid" class="post">
                         <div class = "postcontent">
                           <img :src='post.pictureUrl' height="100" class="img">
@@ -159,7 +159,7 @@ export default {
         title: '',
         content: '',
         eventDate: '',
-        picture: '',
+        pictureUrl: '',
         likeCount: '',
         locationName: '',
         lat: '',
@@ -217,7 +217,7 @@ export default {
           createdOn: new Date(),
           eventDate: this.post.eventDate,
           content: this.post.content,
-          pictureUrl: this.post.picture,
+          pictureUrl: this.post.pictureUrl,
           userId: this.currentUser.uid,
           organizationName: this.userProfile.organizationName,
           likeCount: 0,
@@ -228,7 +228,7 @@ export default {
         .then(ref => {
           this.post.title = '',
           this.post.content = '',
-          this.post.picture = '',
+          this.post.pictureUrl = '',
           this.post.eventDate = '',
           this.post.locationName = ''
         })
@@ -302,9 +302,10 @@ export default {
     }, error =>{console.log(error.message)},
       ()=>{this.uploadValue=100;
         task.snapshot.ref.getDownloadURL().then((url) => {
-        this.post.picture = url;
+        this.post.pictureUrl = url;
         console.log("insied of uploadImage woo")
-        console.log(this.post.picture)
+        console.log(this.post.pictureUrl)
+        console.log(this.uploadValue)
         });
       });
     },
@@ -321,13 +322,13 @@ export default {
           title: this.post.title,
           content: this.post.content,
           eventDate: this.post.eventDate,
-          pictureUrl: this.post.picture,
+          pictureUrl: this.post.pictureUrl,
           locationName: this.post.locationName
         })
         .then(ref => {
           this.post.title = '',
           this.post.content = '',
-          this.post.picture = '',
+          this.post.pictureUrl = '',
           this.post.eventDate = '',
           this.post.locationName = ''
         })
@@ -348,7 +349,7 @@ export default {
         (this.post.title = post.title),
         (this.post.content = post.content),
         (this.post.eventDate = post.eventDate),
-        (this.post.picture = post.pictureUrl),
+        (this.post.pictureUrl = post.pictureUrl),
         (this.post.locationName = post.locationName),
         (this.editId = post.id);
     }

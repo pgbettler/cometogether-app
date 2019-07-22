@@ -55,6 +55,7 @@ export default {
       center: { lat: 28.6027206, lng: -81.2015438 },
       markers: [],
       places: [],
+      locations: [],
       currentPlace: null,
       filterKey: "",
     };
@@ -63,7 +64,7 @@ export default {
     MapFilter
   },
   computed: {
-    ...mapState(['userProfile', 'currentUser', 'posts']),
+    ...mapState(['userProfile', 'currentUser', 'posts', 'likedPosts']),
   },
 
   mounted() {
@@ -81,6 +82,22 @@ export default {
       let posts = fb.postsCollection;
 
       let locations = this.filterEvents();
+      locations.forEach(doc => {
+          //Make the marker
+          console.log("Loc: " + doc.location + "Lat: " + doc.lat + "Lng: " + doc.lng);
+          if (doc.location) {
+            const marker = {
+              lat: doc.lat,
+              lng: doc.lng
+            };
+            this.markers.push({ position: marker });
+            this.places.push(doc.location);
+            this.center = marker;
+            this.currentPlace = null;
+          }
+            console.log("Markers: " + this.markers.length)
+      })
+      /*
       setTimeout( () => {
         // create Markers for each PostID in array
         // postId.location 
@@ -92,7 +109,7 @@ export default {
           let postdoc = posts.doc(locations[i]);
           this.setLocationInfo(postdoc);
         }
-      },2000);
+      },2000);*/
     },
     setLocationInfo(postdoc) {
       var vm = this;
@@ -165,6 +182,7 @@ export default {
 
     filterEvents() {
       console.log("WE'VE ENTERED FILTERED EVENTS: STAGE 2");
+      this.markers = [];
 
       let uid = this.currentUser.uid;
       let likes = fb.likesCollection;
@@ -176,85 +194,19 @@ export default {
       let key = this.filterKey;
       // generate array of Post ID's to display as markers
       //fill in the empty Locations array to do so
-      let locations = [];
-
       //Check Key for each type of filter
       if(key == 'liked')
       {
         // Only show the liked posts of that user
         // query the databse for User liked posts
-        var listLocs = likes.where("userId", "==", uid);
-        //Store postId's in locations array
-        listLocs.get().then(function(querySnapshot) 
-        {
-          if (querySnapshot.empty) {
-            console.log('no documents found');
-          } 
-          else 
-          {
-            // Adds each result into locations array
-            querySnapshot.forEach(function(doc) 
-            { 
-              //need to see how to get the postId out of these documents
-              locations.push(doc.data().postId);
-              // doc.data() is never undefined for query doc snapshots
-              //console.log(doc.data().postId);
-              //console.log(doc.id, " => ", doc.get(postId));
-            });
-            
-          } 
-        });
-        //console.log("Locations: "+ locations);
-        return locations;
+        this.locations = this.likedPosts;
+        return this.locations;
       } 
       else if(key == 'all')
       {
-        posts.get().then(function(querySnapshot) 
-        {
-          querySnapshot.forEach(function(doc)
-          {
-            //load postId's into location array
-            locations.push(doc.data().postId);
-            // doc.data() is never undefined for query doc snapshots
-            //console.log(doc.id, " => ", doc.data());
-          });
-        });
-        //console.log("Locations: "+ locations);
-        return locations;
+        this.locations = this.posts;
+        return this.locations;
       } 
-      else if (key == 'follows') 
-      {
-        /* Commented out until Follow feature is implemented
-
-        //Grab all Post ID's from all Posts by followed Organizations
-        //Get List of Orgs user is Following 
-        var following = follows.where("userId", "==", uid);
-        follows.get().then(function(querySnapshot) 
-        {
-          // For each OrgId in the follow collection
-          // Go through the orgs posts and push them to locations
-          // doc here means "follow doc"
-          querySnapshot.forEach(function(doc) 
-          {
-            // query posts for all posts by an org
-            //using the orgId field of the current follow doc
-            //Grab the posts made by that orgId
-
-            var orgPosts = posts.where("userId", "==", doc.orgId);
-            orgPosts.get().then(function(querySnapshot)
-            {
-              //Push each post ID onto the locations array
-              querySnapshot.forEach(function(doc) 
-              {
-                locations.push(doc.id);  
-              });
-            }); 
-          });
-        });
-        console.log("Locations: "+ locations);
-        return locations;
-        */
-      }
     },
     geolocate: function() 
     {

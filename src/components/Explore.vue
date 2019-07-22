@@ -8,7 +8,7 @@
             </div>
               <div v-if="posts.length">
                   <div v-for = "post in filteredPosts" :key = "post.id" class="post">
-                      <frame><img :src='post.picture' height="100" class="post-picture"></frame>
+                      <frame><img :src='post.pictureUrl' height="100" class="post-picture"></frame>
                       <h4>{{ post.title }}</h4>
                       <h5>{{ post.organizationName }}</h5>
                       <span>{{ post.eventDate | moment }}</span>

@@ -30,7 +30,7 @@ fb.auth.onAuthStateChanged(user => {
                })
              })
          })
-        
+         console.log(likesArray)
          store.commit('setPosts', postsArray)
          store.commit('setLikedPosts', likesArray)
         })
