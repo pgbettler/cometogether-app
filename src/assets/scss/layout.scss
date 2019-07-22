@@ -462,6 +462,7 @@ header {
     }
     .no-results {
         border: 1px solid #e6ecf0;
+        display: none;
         background: $white;
         text-align: center;
         padding: 100px 1rem;
