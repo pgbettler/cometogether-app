@@ -85,7 +85,7 @@
                   <input type="text" v-model="search" placeholder="Search...">
                   </div>
                   <div v-if="posts.length">
-                    <div v-for = "post in filteredPosts" :key = "post.id" class="post">
+                    <div v-for = "post in filteredPosts" :key = "post.id">
                      <div v-if="post.userId == currentUser.uid" class="post">
                         <div class = "postcontent">
                           <img :src='post.pictureUrl' height="100" class="img">

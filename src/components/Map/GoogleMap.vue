@@ -63,7 +63,7 @@ export default {
     MapFilter
   },
   computed: {
-    ...mapState(['userProfile', 'currentUser', 'posts']),
+    ...mapState(['userProfile', 'currentUser', 'posts', 'likedPosts']),
   },
 
   mounted() {
