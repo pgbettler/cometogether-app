@@ -45,11 +45,11 @@
                               use12-hour></datetime>
                             <textarea v-model.trim="post.content" placeholder = "Details" class="details"></textarea>
                             <gmap-autocomplete @place_changed=setPlace></gmap-autocomplete>
-                            <slot>
+                            
                              <frame><img :src='post.pictureUrl' height="100"></frame>
-                             </slot>
+                             
                             <button raised type="button" class="button" @click='toggleUploadForm(true)'>Upload a Photo</button>
-                            <button @click="saveEditContact" class="button">Save</button>
+                            <button @click="saveEditContact" type="button" class="button">Save</button>
                            
                         </form>
                     </div>
@@ -66,12 +66,8 @@
                               use12-hour></datetime>
                             <textarea v-model.trim="post.content" placeholder = "Details" class="details"></textarea>
                             <gmap-autocomplete  @place_changed=setPlace></gmap-autocomplete>
-                            <slot>
-                             <frame><img :src='post.pictureUrl' height="100"></frame>
-                             </slot>
-
+                            <img :src='post.pictureUrl' height="100">
                             <button raised type="button" class="button" @click='toggleUploadForm(true)'>Upload a Photo</button>
-                            
                             <button @click="createPost" type="button" class="button">Post</button>
                         </form>
                     </div>
