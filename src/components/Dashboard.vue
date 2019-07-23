@@ -116,7 +116,7 @@
                 <!-- Still not work !!!!! -->
                 <div class= "search"> </div>
                 <div v-if="posts.length">
-                    <div v-for = "post in filteredPosts" :key = "post.id" class="post">
+                    <div v-for = "post in filteredLikedPosts" :key = "post.id" class="post">
                         <img :src='post.pictureUrl' height="100" class="post-picture" >
                         <h4> {{ post.title }}</h4>
                         <h5>{{ post.organizationName }}</h5>
