@@ -12,6 +12,7 @@
                       <h4>{{ post.title }}</h4>
                       <h5>{{ post.organizationName }}</h5>
                       <span>{{ post.eventDate | moment }}</span>
+                      <span>{{ post.location }}</span>
                       <p>{{ post.content | trimLength }}</p>
                       <button @click="likePost(post.id, post.likeCount)" class="button">Likes {{ post.likeCount }}</button>
                   </div>

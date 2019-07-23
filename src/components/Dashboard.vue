@@ -44,7 +44,7 @@
                               :minute-step="15"
                               use12-hour></datetime>
                             <textarea v-model.trim="post.content" placeholder = "Details" class="details"></textarea>
-                            <gmap-autocomplete @place_changed=setPlace></gmap-autocomplete>
+                            <gmap-autocomplete @place_changed=setPlace>{{this.post.location}}</gmap-autocomplete>
                             
                              <frame><img :src='post.pictureUrl' height="100"></frame>
                              
@@ -87,7 +87,7 @@
                           <h5>{{ post.organizationName }}</h5>
                           <span>{{ post.eventDate | moment }}</span>
                           <!-- used for testing comment out later -->
-                          <span>{{ post.locationName }}</span>
+                          <span>{{ post.location }}</span>
                           <p>{{ post.content | trimLength }}</p>
                           <!-- Maybe add a unlike button instead of like button since it's already liked -->
                           <button class="button">Likes {{ post.likeCount }}</button> <!-- They can only view likes -->
@@ -161,7 +161,7 @@ export default {
         eventDate: '',
         pictureUrl: '',
         likeCount: '',
-        locationName: '',
+        location: '',
         lat: '',
         lng: ''
       },
@@ -201,13 +201,13 @@ export default {
   methods: {
     setPlace(place) {
     
-      console.log("Old Location: " + this.post.locationName);
+      console.log("Old Location: " + this.post.location);
       console.log("Place equals: " + JSON.stringify(place.name, undefined, 2));
-      this.post.locationName = place.name;
+      this.post.location = place.name;
       this.post.lat = place.geometry.location.lat();
       this.post.lng = place.geometry.location.lng();
       console.log("Lat: " + place.geometry.location.lat());
-      console.log("New Location: " + this.post.locationName);
+      console.log("New Location: " + this.post.location);
       console.log("Event Latitude: " + this.post.lat);
       console.log("Event Longitude: " + this.post.lng);
     },
@@ -221,7 +221,7 @@ export default {
           userId: this.currentUser.uid,
           organizationName: this.userProfile.organizationName,
           likeCount: 0,
-          location: this.post.locationName,
+          location: this.post.location,
           lat: this.post.lat,
           lng: this.post.lng
         })
@@ -230,7 +230,7 @@ export default {
           this.post.content = '',
           this.post.pictureUrl = '',
           this.post.eventDate = '',
-          this.post.locationName = ''
+          this.post.location = ''
         })
         .catch(err => {
           console.log(err);
@@ -323,14 +323,14 @@ export default {
           content: this.post.content,
           eventDate: this.post.eventDate,
           pictureUrl: this.post.pictureUrl,
-          locationName: this.post.locationName
+          location: this.post.location
         })
         .then(ref => {
           this.post.title = '',
           this.post.content = '',
           this.post.pictureUrl = '',
           this.post.eventDate = '',
-          this.post.locationName = ''
+          this.post.location = ''
         })
         .catch(err => {
           console.log(err);
@@ -350,7 +350,7 @@ export default {
         (this.post.content = post.content),
         (this.post.eventDate = post.eventDate),
         (this.post.pictureUrl = post.pictureUrl),
-        (this.post.locationName = post.locationName),
+        (this.post.location = post.location),
         (this.editId = post.id);
     }
   }
