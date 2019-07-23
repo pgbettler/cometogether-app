@@ -19,7 +19,6 @@
                     <h5>{{ userProfile.firstName }} {{ userProfile.lastName }}</h5>
                     <p>{{ userProfile.accountType }}</p>
                     <div class="liked-org">
-                        <p>This section will show liked organizations</p>
                     </div>
                 </div>
               <!-- Organization View:
