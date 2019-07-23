@@ -32,13 +32,23 @@ Write Out: if a pin is clicked, can we send this back to the parent component to
         :key="index"
         v-for="(m, index) in markers"
         :position="m.position"
-        @click="center=m.position"
+        @click="toggleInfoWindow(m,i)"
       ></gmap-marker>
+      <gmap-info-window :options="infoOptions" :position="infoWindowPos" :opened="infoWinOpen" @closeclick="infoWinOpen=false">
+            <!-- your custom html components -->
+        <img :src=this.infoPictureUrl height="100" class="post-picture" >
+        <h3>{{this.infoTitle}}</h3>
+        <h4>{{this.infoLocation}}</h4>
+       <span>{{ this.infoDate | moment }}</span>
+        <p>{{this.infoContent}}</p>
+
+        </gmap-info-window>
     </gmap-map>
   </div>
 </template>
 
 <script>
+import moment from 'moment'; //this is used for date formatting
 import { mapState } from "vuex";
 import { likesCollection } from '../../../firebaseConfig';
 import MapFilter from './MapFilter';
@@ -58,10 +68,25 @@ export default {
       locations: [],
       currentPlace: null,
       filterKey: "",
+      infoContent: '',
+      infoTitle: '',
+      infoLocation: '',
+      infoDate: '',
+      infoPictureUrl: '',
+      infoWindowPos: null,
+      infoWinOpen: false,
+      currentMidx: null,
+      //optional: offset infowindow so it visually sits nicely on top of our marker
+      infoOptions: {
+          pixelOffset: {
+          width: 0,
+          height: -35
+          }
+      }
     };
   },  
   components: {
-    MapFilter
+    MapFilter,
   },
   computed: {
     ...mapState(['userProfile', 'currentUser', 'posts', 'likedPosts']),
@@ -71,6 +96,12 @@ export default {
     this.geolocate();
   },
 
+  filters: {
+      moment: function(date) {
+        return moment(date).format('MMMM Do YYYY, h:mm a');
+      },
+  },
+
   methods: {
     // receives a place object via the autocomplete component
     //Pass Id to marker class to decide generation of marker on map. make whether we fine the uid into a computed object possibly another component 
@@ -78,7 +109,6 @@ export default {
       this.currentPlace = place;
     }, 
     setPlaces() {
-      console.log("WE'VE ENTERED SET PLACES: STAGE 1");
       let posts = fb.postsCollection;
 
       let locations = this.filterEvents();
@@ -87,64 +117,25 @@ export default {
           console.log("Loc: " + doc.location + "Lat: " + doc.lat + "Lng: " + doc.lng);
           if (doc.location) {
             const marker = {
+              position:
+              {
               lat: doc.lat,
-              lng: doc.lng
+              lng: doc.lng,
+              },
+              infoTitle: doc.title,
+              infoContent: doc.content,
+              infoDate: doc.eventDate,
+              infoLocation: doc.location,
+              infoPictureUrl: doc.pictureUrl
             };
-            this.markers.push({ position: marker });
+
+            this.markers.push(marker);
             this.places.push(doc.location);
             this.center = marker;
             this.currentPlace = null;
           }
             console.log("Markers: " + this.markers.length)
       })
-      /*
-      setTimeout( () => {
-        // create Markers for each PostID in array
-        // postId.location 
-
-        for(var i = 0; i < locations.length; i++) {
-
-          console.log("Theoretically Printing Out Locations...");
-          console.log(locations[i]);
-          let postdoc = posts.doc(locations[i]);
-          this.setLocationInfo(postdoc);
-        }
-      },2000);*/
-    },
-    setLocationInfo(postdoc) {
-      var vm = this;
-      let p = new Promise((resolve, reject) => {
-        postdoc.get().then(function(doc){
-          if (doc.exists) {
-
-            let loc = doc.data().location;
-            let lat = doc.data().lat;
-            let lng = doc.data().lng;
-
-            //Make the marker
-            console.log("Loc: " + loc + "Lat: " + lat + "Lng: " + lng);
-            if (loc) {
-              const marker = {
-                lat: lat,
-                lng: lng
-              };
-              vm.markers.push({ position: marker });
-              vm.places.push(loc);
-              vm.center = marker;
-              vm.currentPlace = null;
-            }
-            console.log("Markers: " + vm.markers.length)
-
-          } else 
-            console.log("WHY THE FUCK DOESNT THIS EXIST");
-        });
-        resolve('Success!'); 
-      });
-      p.then((message) => {
-        console.log(message) 
-        //this.addPostMarker();
-      });
-
     },
     onFilterClick(value){
       this.filterKey = value;
@@ -218,7 +209,26 @@ export default {
           lng: position.coords.longitude
         };
       });
+    },
+    toggleInfoWindow: function(marker, idx) {
+      this.infoWindowPos = marker.position;
+      console.log("Marker Info: " + JSON.stringify(marker));
+      this.infoTitle= marker.infoTitle;
+      this.infoContent = marker.infoContent;
+      this.infoDate = marker.Date;
+      this.infoLocation = marker.infoLocation;
+      this.infoPictureUrl = marker.infoPictureUrl;
+
+      //check if its the same marker that was selected if yes toggle
+      if (this.currentMidx == idx) {
+        this.infoWinOpen = !this.infoWinOpen;
+      }
+      //if different marker set infowindow to open and reset current marker index
+      else {
+        this.infoWinOpen = true;
+        this.currentMidx = idx;
+      }
     }
-  }
-};
+  },
+}
 </script>
