@@ -10,15 +10,15 @@ Write out: an array of posts or new filter selections
 
 
 <template>
-  <div>
+  <div id="filter"> 
     <h3>Filter Map:</h3>
-    <select name="filterlist" id="filter" v-model= "selected">
+    <select class="button" name="filterlist" v-model= "selected">
         <option disabled value="">Please select one</option>
         <option value="liked">Liked Posts</option>
         <option value="all">All Posts</option>
     </select>
-     <span>Selected: {{ selected }}</span>
-    <button v-on:click=select()>Filter!</button>
+     <!-- <span>Selected: {{ selected }}</span> --><br><br>
+    <button class="button" id="filterbutton" v-on:click=select()>Filter!</button>
    
   </div>
 </template>
@@ -40,3 +40,18 @@ Write out: an array of posts or new filter selections
     }
   }
 </script>
+
+<style>
+#filter {
+    padding: 5px;
+    border-style: solid;
+    width: 20%;
+    text-align: center;
+}
+ #filter #filterbutton {
+    width: 50%;
+    height: 50%;
+    }
+
+
+</style>

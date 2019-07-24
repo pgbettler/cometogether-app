@@ -35,13 +35,15 @@ Write Out: if a pin is clicked, can we send this back to the parent component to
         @click="toggleInfoWindow(m,i)"
       ></gmap-marker>
       <gmap-info-window :options="infoOptions" :position="infoWindowPos" :opened="infoWinOpen" @closeclick="infoWinOpen=false">
-            <!-- your custom html components -->
-        <img :src=this.infoPictureUrl height="100" class="post-picture" >
-        <h3>{{this.infoTitle}}</h3>
-        <h4>{{this.infoLocation}}</h4>
-       <span>{{ this.infoDate | moment }}</span>
-        <p>{{this.infoContent}}</p>
-
+        <!-- your custom html components -->
+        <div id="Marker">
+          <img :src=this.infoPictureUrl id="pics" height="100" class="post-picture" >
+          <h3>{{this.infoTitle}}</h3>
+          <h4>{{this.infoLocation}}</h4>
+          <span>{{ this.infoDate | moment }}</span>
+          <p>{{this.infoContent}}</p>
+        </div>
+        
         </gmap-info-window>
     </gmap-map>
   </div>
@@ -115,7 +117,7 @@ export default {
       locations.forEach(doc => {
           //Make the marker
           console.log("Loc: " + doc.location + "Lat: " + doc.lat + "Lng: " + doc.lng);
-          if (doc.location) {
+          if (doc.lng) {
             const marker = {
               position:
               {
@@ -232,3 +234,9 @@ export default {
   },
 }
 </script>
+
+<style>
+  #marker {
+    align-content: left;
+  }
+</style>
