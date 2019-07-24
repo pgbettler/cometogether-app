@@ -43,7 +43,7 @@
                               :minute-step="15"
                               use12-hour></datetime>
                             <textarea v-model.trim="post.content" placeholder = "Details" class="details"></textarea>
-                            <gmap-autocomplete @place_changed=setPlace>{{this.post.location}}</gmap-autocomplete>
+                            <gmap-autocomplete @place_changed=setPlace :value='[[post.location]]'></gmap-autocomplete>
                             
                              <frame><img :src='post.pictureUrl' height="100"></frame>
                              
