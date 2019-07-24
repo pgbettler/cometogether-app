@@ -12,7 +12,7 @@
 
           <div class="modal-body">
             <slot name="body">
-              <button class="button" raised @click="chooseOnClick">Choose Image</button> <br><br>
+              <button class="button" raised @click="chooseOnClick">Choose Image</button> 
               <input type="file" 
               @change ="onPickedImage"
               style="display: none"
@@ -20,17 +20,16 @@
               ref="fileInput">
               <!-- <button class="button" raised id="UploadBTN" @click="uploadSendMsg">Upload</button> -->
              </slot>
-          </div>
+             </div>
+          
 
-          <div class="modal-footer">
-            
-             <!-- <slot><img: src="this.image"> </slot> -->
-             
+              <div class="modal-footer">
               <slot name="footer">
               <button class="button" v-on:click="hideUpload">
-                OK
+                OK 
               </button>
               </slot>
+              </div>
               
 
           </div>
@@ -107,25 +106,32 @@ methods: {
 }
 
 .modal-container {
-  width: 300px;
+  width: 280px;
   margin: 0px auto;
   padding: 20px 30px;
   background-color: #fff;
-  border-radius: 2px;
+  border-radius: 25px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
   transition: all .3s ease;
   font-family: Helvetica, Arial, sans-serif;
 }
 
-.modal-header h3 {
+.modal-header {
+  text-align: center;
   margin-top: 0;
-  color: #42b983;
 }
 
 .modal-body {
   margin: 20px 0;
+  text-align: center;
+  
 }
-
+.modal-footer {
+  width:auto;
+  text-align: center;
+  display: block;
+  margin: 20px 0;
+}
 .modal-default-button {
   float: right;
 }
