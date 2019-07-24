@@ -12,13 +12,13 @@
 
           <div class="modal-body">
             <slot name="body">
-              <button raised @click="chooseOnClick">Choose Image</button>
+              <button class="button" raised @click="chooseOnClick">Choose Image</button> <br><br>
               <input type="file" 
               @change ="onPickedImage"
               style="display: none"
               accept="image/*"
               ref="fileInput">
-              <button raised id="UploadBTN" @click="uploadSendMsg">Upload</button>
+              <!-- <button class="button" raised id="UploadBTN" @click="uploadSendMsg">Upload</button> -->
              </slot>
           </div>
 
@@ -79,7 +79,7 @@ methods: {
         console.log(this.imageUrl)
         console.log(this.image)
         this.$emit('theImage', this.image)
-        
+        this.uploadSendMsg();
         
         }
     },
