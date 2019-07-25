@@ -114,7 +114,10 @@
                      Then show that specific post --> 
                 <!-- Still not work !!!!! -->
                 <div class= "search"> </div>
-                <div v-if="posts.length">
+                <div v-if="filteredLikedPosts.length == 0">
+                    <p class="no-results">You Currently Have No Liked Posts!!</p>
+                </div>
+                <div v-else>
                     <div v-for = "post in filteredLikedPosts" :key = "post.id" class="post">
                         <img :src='post.pictureUrl' height="100" class="post-picture" >
                         <h4> {{ post.title }}</h4>
@@ -127,9 +130,7 @@
                         <button @click="toggleLike(post.id, post.likeCount)" class="button">Likes {{ post.likeCount }}</button>
                     </div>
                 </div> 
-                <div v-else>
-                    <p class="no-results">There are currently no posts</p>
-                </div>
+                
               </div>
             </div>
 
