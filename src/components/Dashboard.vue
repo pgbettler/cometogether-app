@@ -89,7 +89,7 @@
                           <span>{{ post.location }}</span>
                           <p>{{ post.content | trimLength }}</p>
                           <!-- Maybe add a unlike button instead of like button since it's already liked -->
-                          <button class="button">Likes {{ post.likeCount }}</button> <!-- They can only view likes -->
+                          <button class="button">Likes {{ post.likeCount }} <img src="https://img.icons8.com/color/24/000000/filled-like.png" height=15> </button> <!-- They can only view likes -->
                         </div>
                         <div class="updatebuttons">
                           <ul>

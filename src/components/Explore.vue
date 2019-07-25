@@ -14,7 +14,7 @@
                       <span>{{ post.eventDate | moment }}</span>
                       <span>{{ post.location }}</span>
                       <p>{{ post.content | trimLength }}</p>
-                      <button @click="likePost(post.id, post.likeCount)" class="button">Likes {{ post.likeCount }}</button>
+                      <button @click="likePost(post.id, post.likeCount)" class="button">Likes {{ post.likeCount }} <img src="https://img.icons8.com/color/24/000000/filled-like.png" height=15> </button>
                   </div>
               </div> 
               <div v-else>
