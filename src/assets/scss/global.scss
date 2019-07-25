@@ -133,7 +133,9 @@ section {
 		margin: 0;
 	}
 }
-
+.no-results {
+	border-radius: 20px;
+}
 .button {
 	background: $secondary;
 	border: 0;

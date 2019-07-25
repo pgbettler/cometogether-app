@@ -114,8 +114,8 @@
                      Then show that specific post --> 
                 <!-- Still not work !!!!! -->
                 <div class= "search"> </div>
-                <div v-if="filteredLikedPosts.length == 0">
-                    <p class="no-results">You Currently Have No Liked Posts!!</p>
+                <div class="no-results" v-if="filteredLikedPosts.length == 0">
+                    <p>You Currently Have No Liked Posts!!</p>
                 </div>
                 <div v-else>
                     <div v-for = "post in filteredLikedPosts" :key = "post.id" class="post">
